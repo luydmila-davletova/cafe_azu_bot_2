@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
+from django.utils.http import urlencode
 from .models import Reservation, OrderSets
 
 
@@ -16,7 +19,14 @@ class ReservationAdmin(admin.ModelAdmin):
             short_description = 'Стола'
         else:
             short_description = 'Столов'
-        return count, short_description
+        url = (
+            reverse("admin:tables_table_changelist")
+            + "?"
+            + urlencode({"reservation__id": f"{obj.id}"})
+        )
+        return format_html(
+            '<a href="{}">{} {}</a>', url, count, short_description
+        )
     view_tables.short_description = 'Столов'
 
     def view_order_sets(self, obj):
@@ -27,7 +37,14 @@ class ReservationAdmin(admin.ModelAdmin):
             short_description = 'Заказа'
         else:
             short_description = 'Заказов'
-        return count, short_description
+        url = (
+            reverse("admin:reservation_ordersets_changelist")
+            + "?"
+            + urlencode({"reservation__id": f"{obj.id}"})
+        )
+        return format_html(
+            '<a href="{}">{} {}</a>', url, count, short_description
+        )
     view_order_sets.short_description = "Сетов"
 
 

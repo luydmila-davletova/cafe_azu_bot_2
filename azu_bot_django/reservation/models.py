@@ -12,8 +12,7 @@ class Reservation(models.Model):
         verbose_name='В кафе'
     )
     tables = models.ManyToManyField(
-        Table,
-        related_name='tables'
+        Table
     )
     sets = models.ManyToManyField(
         "OrderSets"
