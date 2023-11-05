@@ -3,28 +3,32 @@ from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
 
-
 class Reservation(models.Model):
     cafe = models.ForeignKey(
         Cafe,
         on_delete=models.CASCADE,
-        related_name='res_cafe',
-        verbose_name='В кафе'
+        related_name='reservations',
+        verbose_name='Кафе'
     )
-    tables = models.ManyToManyField(
-        Table
+    table = models.ManyToManyField(
+        Table,
+        verbose_name='Столы'
     )
     sets = models.ManyToManyField(
-        "OrderSets"
+        Set,
+        through='OrderSets',
+        verbose_name='Заказы'
     )
     date = models.DateField(
-        'Дата бронирования'
+        verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        'Имя клиента'
+        max_length=100,
+        verbose_name='Имя клиента'
     )
     number = models.CharField(
-        'Номер телефона клиента'
+        max_length=15,
+        verbose_name='Номер телефона клиента'
     )
 
     class Meta:
@@ -33,13 +37,23 @@ class Reservation(models.Model):
         ordering = ("date",)
 
     def __str__(self):
-        return f'В кафе {self.cafe}, для {self.name} на {self.date}'
+        return f'Бронь в кафе {self.cafe} для {self.name} на {self.date}'
 
 
 class OrderSets(models.Model):
-    sets = models.ForeignKey(Set, on_delete=models.CASCADE)
-    quantity = models.IntegerField(
-        'Количество сета'
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name='order_sets',
+        verbose_name='Бронь'
+    )
+    set = models.ForeignKey(
+        Set,
+        on_delete=models.CASCADE,
+        verbose_name='Сет'
+    )
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество сета'
     )
 
     class Meta:
@@ -47,4 +61,4 @@ class OrderSets(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'Заказ {self.sets} в количестве {self.quantity}'
+        return f'Заказ {self.set} в количестве {self.quantity}'

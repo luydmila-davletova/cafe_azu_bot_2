@@ -61,12 +61,8 @@ WSGI_APPLICATION = 'azu_bot_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', default='postgres'),
-        'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', default='Coop5357'),
-        'HOST': os.getenv('DATABASE_HOST', default='localhost'),
-        'PORT': os.getenv('DATABASE_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

@@ -6,17 +6,17 @@ class Table(models.Model):
     cafe = models.ForeignKey(
         Cafe,
         on_delete=models.CASCADE,
-        related_name='table_cafe',
-        verbose_name='В кафе'
+        related_name='tables',
+        verbose_name='Кафе'
     )
-    quantity = models.CharField(
-        'Размер стола'
+    quantity = models.PositiveSmallIntegerField(
+        verbose_name='Размер стола (количество мест)'
     )
 
     class Meta:
         verbose_name = 'Стол'
         verbose_name_plural = 'Столы'
-        ordering = ("cafe", "quantity",)
+        ordering = ("cafe", "quantity")
 
     def __str__(self):
-        return f'Cтол на в {self.cafe} размером {self.quantity} человек'
+        return f'Стол в {self.cafe} на {self.quantity} человек'

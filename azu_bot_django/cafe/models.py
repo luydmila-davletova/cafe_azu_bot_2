@@ -3,13 +3,16 @@ from django.db import models
 
 class Cafe(models.Model):
     name = models.CharField(
-        'Название кафе'
+        max_length=100,
+        verbose_name='Название кафе'
     )
     address = models.CharField(
-        'Адрес кафе'
+        max_length=200,
+        verbose_name='Адрес кафе'
     )
     number = models.CharField(
-        'Номер кафе'
+        max_length=15,
+        verbose_name='Номер кафе'
     )
 
     class Meta:
