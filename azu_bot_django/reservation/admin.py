@@ -13,20 +13,19 @@ class ReservationAdmin(admin.ModelAdmin):
 
     def view_tables(self, obj):
         count = obj.tables.count()
+        quantity = ''
         if count == 1:
-            short_description = 'Стол'
+            short_description = ' Стол '
         elif 1 < count < 5:
-            short_description = 'Стола'
+            short_description = ' Стола '
         else:
-            short_description = 'Столов'
-        url = (
-            reverse("admin:tables_table_changelist")
-            + "?"
-            + urlencode({"reservation__id": f"{obj.id}"})
-        )
-        return format_html(
-            '<a href="{}">{} {}</a>', url, count, short_description
-        )
+            short_description = ' Столов '
+        for table in obj.tables.all():
+            if quantity:
+                quantity += ', '
+            quantity += str(table.quantity)
+
+        return str(count) + short_description + 'на ' + quantity + ' человек'
     view_tables.short_description = 'Столов'
 
     def view_order_sets(self, obj):

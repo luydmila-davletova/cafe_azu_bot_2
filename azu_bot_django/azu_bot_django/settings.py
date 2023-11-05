@@ -13,6 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+MAX_CHAR_LENGHT = 256
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -58,17 +59,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'azu_bot_django.wsgi.application'
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME', default='postgres'),
-        'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD', default='Coop5357'),
-        'HOST': os.getenv('DATABASE_HOST', default='localhost'),
-        'PORT': os.getenv('DATABASE_PORT', default='5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv('DATABASE_NAME', default='postgres'),
+#         'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD', default='postgres'),
+#         'HOST': os.getenv('DATABASE_HOST', default='localhost'),
+#         'PORT': os.getenv('DATABASE_PORT', default='5432'),
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -1,15 +1,19 @@
 from django.db import models
+from azu_bot_django.settings import MAX_CHAR_LENGHT
 
 
 class Cafe(models.Model):
     name = models.CharField(
-        'Название кафе'
+        'Название кафе',
+        max_length=MAX_CHAR_LENGHT
     )
     address = models.CharField(
-        'Адрес кафе'
+        'Адрес кафе',
+        max_length=MAX_CHAR_LENGHT
     )
     number = models.CharField(
-        'Номер кафе'
+        'Номер кафе',
+        max_length=MAX_CHAR_LENGHT
     )
 
     class Meta:

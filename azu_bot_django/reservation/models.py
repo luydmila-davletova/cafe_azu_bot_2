@@ -2,6 +2,7 @@ from django.db import models
 from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
+from azu_bot_django.settings import MAX_CHAR_LENGHT
 
 
 class Reservation(models.Model):
@@ -21,10 +22,12 @@ class Reservation(models.Model):
         'Дата бронирования'
     )
     name = models.CharField(
-        'Имя клиента'
+        'Имя клиента',
+        max_length=MAX_CHAR_LENGHT
     )
     number = models.CharField(
-        'Номер телефона клиента'
+        'Номер телефона клиента',
+        max_length=MAX_CHAR_LENGHT
     )
 
     class Meta:

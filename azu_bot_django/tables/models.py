@@ -9,7 +9,7 @@ class Table(models.Model):
         related_name='table_cafe',
         verbose_name='В кафе'
     )
-    quantity = models.CharField(
+    quantity = models.IntegerField(
         'Размер стола'
     )
 
