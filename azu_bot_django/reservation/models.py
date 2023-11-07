@@ -16,7 +16,7 @@ class Reservation(models.Model):
         Table
     )
     sets = models.ManyToManyField(
-        "OrderSets"
+        'OrderSets', related_name='reservations_sets'
     )
     date = models.DateField(
         'Дата бронирования'
@@ -29,18 +29,33 @@ class Reservation(models.Model):
         'Номер телефона клиента',
         max_length=MAX_CHAR_LENGHT
     )
+    status = models.CharField(max_length=20,
+                              choices=[
+                                ('booked', 'Забронировано'),
+                                ('cancelled', 'Отменено')])
+    sets_and_quantities = models.ManyToManyField(
+        'OrderSets',
+        related_name='sets_and_qtys_booking')
 
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
-        ordering = ("date",)
+        ordering = ('date',)
 
     def __str__(self):
         return f'В кафе {self.cafe}, для {self.name} на {self.date}'
 
 
 class OrderSets(models.Model):
-    sets = models.ForeignKey(Set, on_delete=models.CASCADE)
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name='order_sets',
+        default=None)
+    sets = models.ForeignKey(
+        Set,
+        on_delete=models.CASCADE,
+        related_name='order_sets')
     quantity = models.IntegerField(
         'Количество сета'
     )
