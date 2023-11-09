@@ -3,6 +3,28 @@ from datetime import datetime, timedelta, timezone
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
+def start_kbd():
+    """Клавиатура запуска бота."""
+    keyboard_builder = ReplyKeyboardBuilder()
+    keyboard_builder.button(text='Начать')
+    keyboard_builder.adjust(1)
+    return keyboard_builder.as_markup(
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+
+
+def back_kbd():
+    """Клавиатура возвращения назад."""
+    keyboard_builder = ReplyKeyboardBuilder()
+    keyboard_builder.button(text='Назад')
+    keyboard_builder.adjust(1)
+    return keyboard_builder.as_markup(
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+
+
 def cafe_select_kbd():
     """Клавиатура выбора кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
@@ -37,7 +59,7 @@ def main_cafe_kbd():
 def table_or_back_kbd():
     """Перейти к бронированию стола или вернуться назад."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Забронировать столик')
+    keyboard_builder.button(text='Забронировать стол')
     keyboard_builder.button(text='Назад')
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
@@ -49,24 +71,24 @@ def table_or_back_kbd():
 
 def date_or_back_kbd():
     """Выбрать дату бронирования стола или вернуться назад."""
-    offset = timezone(timedelta(hours=3))
-    day_after_tommorow = datetime.now(offset) + timedelta(days=2)
-    day_after_tommorow = day_after_tommorow.strftime('%d.%m.')
-    after_day_after_tommorow = datetime.now(offset) + timedelta(days=3)
-    after_day_after_tommorow = after_day_after_tommorow.strftime('%d.%m.')
+#    offset = timezone(timedelta(hours=3))
+#    day_after_tommorow = datetime.now(offset) + timedelta(days=2)
+#    day_after_tommorow = day_after_tommorow.strftime('%d.%m.')
+#    after_day_after_tommorow = datetime.now(offset) + timedelta(days=3)
+#    after_day_after_tommorow = after_day_after_tommorow.strftime('%d.%m.')
 
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Сегодня')
-    keyboard_builder.button(text='Завтра')
-    keyboard_builder.button(text=f'{day_after_tommorow}')
-    keyboard_builder.button(text=f'{after_day_after_tommorow}')
+#    keyboard_builder.button(text='Сегодня')
+#    keyboard_builder.button(text='Завтра')
+#    keyboard_builder.button(text=f'{day_after_tommorow}')
+#    keyboard_builder.button(text=f'{after_day_after_tommorow}')
     keyboard_builder.button(text='Назад')
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
         one_time_keyboard=True,
-        input_field_placeholder='На какой день забронировать стол?'
+        input_field_placeholder='Введите дату в формате ДД.ММ'
     )
 
 
