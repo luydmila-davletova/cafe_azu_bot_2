@@ -1,11 +1,18 @@
 from django.contrib import admin
 from django.db import models
+from django.utils.html import format_html
 
 
 class Dish(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Название блюда'
+    )
+    image = models.ImageField(
+        upload_to='dishes/',
+        verbose_name='Изображение блюда',
+        blank=True,
+        null=True
     )
 
     class Meta:
@@ -42,8 +49,13 @@ class Set(models.Model):
     quantity = models.PositiveIntegerField(
         verbose_name='Количество сетов'
     )
-    dishes = models.ManyToManyField(Dish, through=SetDish,
-                                    verbose_name='Блюда', blank=True)
+    dishes = models.ManyToManyField(Dish, through=SetDish, verbose_name='Блюда', blank=True)
+    image = models.ImageField(
+        upload_to='sets/',
+        verbose_name='Изображение сета',
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name = 'Сет'
@@ -52,3 +64,7 @@ class Set(models.Model):
 
     def __str__(self):
         return f'{self.name} по цене {self.price}'
+
+
+class SetDishInline(admin.TabularInline):
+    model = SetDish

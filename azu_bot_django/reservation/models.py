@@ -3,6 +3,7 @@ from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
 
+
 class Reservation(models.Model):
     cafe = models.ForeignKey(
         Cafe,
