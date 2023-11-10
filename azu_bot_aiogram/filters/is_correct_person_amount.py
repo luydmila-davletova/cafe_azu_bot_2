@@ -9,6 +9,6 @@ class IsPersonAmount(BaseFilter):
         """Проверка корректности ввода количества человек."""
         pattern = r'[1-6]'
         if re.match(pattern, message.text):
-            return {'date': message.text}
+            return {'amount': message.text}
         else:
             return False

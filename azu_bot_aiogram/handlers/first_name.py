@@ -1,9 +1,7 @@
-from aiogram import Bot
 from aiogram.types import Message
-from azu_bot_aiogram.keyboards.reply_keyboards import enter_phone_kbd
+from aiogram import Bot
 
 
-async def get_name(message: Message, bot: Bot):
-    """Получить имя пользователя для передачи в чат бота по кнопке."""
-    await message.answer(f'{message.from_user.first_name}',
-                         reply_markup=enter_phone_kbd())
+async def get_first_name(message: Message, bot: Bot, first_name: str):
+    """Если клиент нажимает кнопку 'На моё имя' - возвращается имя клиента."""
+    await message.answer(f'{first_name}')

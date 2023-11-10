@@ -49,3 +49,25 @@ async def person_per_table(message: Message, bot: Bot):
 async def name_for_dating(message: Message, bot: Bot):
     await message.answer('На чье имя бронируем стол?',
                          reply_markup=enter_name_kbd())
+
+
+async def get_name(message: Message, bot: Bot):
+    await message.answer(f'{message.from_user.first_name}')
+    await message.answer('Введите номер телефона для бронирования стола',
+                         reply_markup=enter_phone_kbd())
+
+
+async def choose_set(message: Message, bot: Bot):
+    await message.answer('Тут должны появляться сеты \n'
+                         'Для перехода к оплате введите текст "Перейти к оплате"')
+
+
+async def get_true_contact(message: Message, bot: Bot, phone: str):
+    """Если заказчик правильно указал телефон, то в чат вернется номер."""
+    await message.answer(f'{phone}')
+    await choose_set(message, bot)
+
+
+async def get_fake_contact(message: Message, bot: Bot):
+    """Если телефон указан неправльно, то в чат вернется ошибка."""
+    await message.answer('Вы отправили не свой номер телефона!')
