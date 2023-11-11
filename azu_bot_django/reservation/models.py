@@ -2,6 +2,7 @@ from django.db import models
 from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
+from azu_bot_django.settings import MAX_CHAR_LENGHT
 
 
 class Reservation(models.Model):
@@ -31,11 +32,18 @@ class Reservation(models.Model):
         max_length=15,
         verbose_name='Номер телефона клиента'
     )
+    status = models.CharField(max_length=20,
+                              choices=[
+                                ('booked', 'Забронировано'),
+                                ('cancelled', 'Отменено')])
+    sets_and_quantities = models.ManyToManyField(
+        'OrderSets',
+        related_name='sets_and_qtys_booking')
 
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
-        ordering = ("date",)
+        ordering = ('date',)
 
     def __str__(self):
         return f'Бронь в кафе {self.cafe} для {self.name} на {self.date}'

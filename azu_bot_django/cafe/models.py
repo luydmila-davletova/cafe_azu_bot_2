@@ -1,4 +1,5 @@
 from django.db import models
+from azu_bot_django.settings import MAX_CHAR_LENGHT
 
 
 class Cafe(models.Model):

@@ -37,9 +37,9 @@ class ReservationAdmin(admin.ModelAdmin):
     def view_tables(self, obj):
         count = obj.table.count()
         if count == 1:
-            short_description = 'Стол'
+            short_description = ' Стол '
         elif 1 < count < 5:
-            short_description = 'Стола'
+            short_description = ' Стола '
         else:
             short_description = 'Столов'
 

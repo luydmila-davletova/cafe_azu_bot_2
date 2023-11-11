@@ -26,3 +26,4 @@ class SetAdmin(admin.ModelAdmin):
 @admin.register(Dish)
 class DishAdmin(admin.ModelAdmin):
     pass
+  

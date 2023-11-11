@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db import models
+
 from django.utils.html import format_html
 
 
@@ -64,7 +65,3 @@ class Set(models.Model):
 
     def __str__(self):
         return f'{self.name} по цене {self.price}'
-
-
-class SetDishInline(admin.TabularInline):
-    model = SetDish
