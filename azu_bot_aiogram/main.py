@@ -10,26 +10,29 @@ from filters.is_contact import IsTrueContact
 from filters.is_correct_date import IsCorrectDate
 from filters.is_first_name import IsTrueName
 from filters.is_correct_person_amount import IsPersonAmount
-from handlers.basic import (back_to_start, cafe_menu, choose_set,
-                            date_table, get_contacts, get_name, get_start,
+from handlers.basic import (back_to_start, cafe_menu,
+                            check_order_go_to_pay, choose_pay_method,
+                            choose_set, date_table, get_contacts,
+                            get_name, get_start,
                             get_fake_contact, get_true_contact,
                             main_cafe_menu, name_for_dating,
                             person_per_table, route_to_cafe)
 #from handlers.contact import get_true_contact, get_fake_contact
 from handlers.first_name import get_first_name
+from handlers.pay import order, pre_checkout_query, succesfull_payment
 from settings import settings
 from utils.commands import set_commands
 
 
-async def start_bot(bot: Bot):
-    """Уведомление админа о начале работы бота."""
-    await set_commands(bot)
-    await bot.send_message(settings.bots.admin_id, text='Бот запущен!')
+# async def start_bot(bot: Bot):
+#    """Уведомление админа о начале работы бота."""
+#    await set_commands(bot)
+#    await bot.send_message(settings.bots.admin_id, text='Бот запущен!')
 
 
-async def stop_bot(bot: Bot):
-    """Уведомление админа о завершении работы бота."""
-    await bot.send_message(settings.bots.admin_id, text='Бот остановлен!')
+# async def stop_bot(bot: Bot):
+#    """Уведомление админа о завершении работы бота."""
+#    await bot.send_message(settings.bots.admin_id, text='Бот остановлен!')
 
 
 async def start():
@@ -41,8 +44,11 @@ async def start():
     bot = Bot(token=settings.bots.bot_token)
 
     dp = Dispatcher()
-    dp.startup.register(start_bot)
-    dp.shutdown.register(stop_bot)
+#    dp.startup.register(start_bot)
+#    dp.shutdown.register(stop_bot)
+    dp.message.register(order, F.text == 'Оплатить через ЮКасса')
+    dp.pre_checkout_query.register(pre_checkout_query)
+    dp.message.register(succesfull_payment, F.successful_payment)
     dp.message.register(get_true_contact, F.contact, IsTrueContact())
     dp.message.register(get_fake_contact, F.contact)
     dp.message.register(get_start, Command(commands=['start', 'run']))
@@ -56,7 +62,8 @@ async def start():
     dp.message.register(name_for_dating, IsPersonAmount())
     dp.message.register(get_name, F.text == 'На моё имя')
     dp.message.register(choose_set, F.text.startswith('+79'))
-
+    dp.message.register(check_order_go_to_pay, F.text == 'Оплатить')
+    dp.message.register(choose_pay_method, F.text == 'Перейти к оплате')
 
 
     try:

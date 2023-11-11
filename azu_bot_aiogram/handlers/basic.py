@@ -58,8 +58,8 @@ async def get_name(message: Message, bot: Bot):
 
 
 async def choose_set(message: Message, bot: Bot):
-    await message.answer('Тут должны появляться сеты \n'
-                         'Для перехода к оплате введите текст "Перейти к оплате"')
+    await message.answer('***Тут появляются сеты для формирования заказа***',
+                         reply_markup=go_to_pay_or_choose_food_kbd())
 
 
 async def get_true_contact(message: Message, bot: Bot, phone: str):
@@ -71,3 +71,16 @@ async def get_true_contact(message: Message, bot: Bot, phone: str):
 async def get_fake_contact(message: Message, bot: Bot):
     """Если телефон указан неправльно, то в чат вернется ошибка."""
     await message.answer('Вы отправили не свой номер телефона!')
+
+
+async def check_order_go_to_pay(message: Message, bot: Bot):
+    """Клиент проверяет перечень заказанного и переходит к оплате."""
+    await message.answer('Вы заказали:\n'
+                         '***Тут должно быть перечисление сетов***',
+                         reply_markup=check_order_kbd())
+
+
+async def choose_pay_method(message: Message, bot: Bot):
+    """Клиент выбирает способ оплаты сета."""
+    await message.answer('Выберите способ оплаты',
+                         reply_markup=choose_pay_type_kbd())

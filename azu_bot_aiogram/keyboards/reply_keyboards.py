@@ -107,7 +107,7 @@ def people_per_table_kbd():
     return keyboard_builder.as_markup(
         resize_keyboard=True,
         one_time_keyboard=True,
-        input_field_placeholder='На какое количество персон забронируем стол?'
+        input_field_placeholder='Сколько персон будет за столом?'
     )
 
 
@@ -188,7 +188,7 @@ def go_to_pay_or_choose_food_kbd():
     """Продолжить выбор еды или перейти к оплате."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Продолжить выбор')
-    keyboard_builder.button(text='Перейти к оплате')
+    keyboard_builder.button(text='Оплатить')
     keyboard_builder.button(text='Назад')
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(1, 1, 2)
@@ -216,8 +216,7 @@ def check_order_kbd():
 def choose_pay_type_kbd():
     """Выбрать способ оплаты."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Способ 1')
-    keyboard_builder.button(text='Способ 2')
+    keyboard_builder.button(text='Оплатить через ЮКасса')
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
