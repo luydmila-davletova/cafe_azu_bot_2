@@ -9,25 +9,28 @@ class Reservation(models.Model):
     cafe = models.ForeignKey(
         Cafe,
         on_delete=models.CASCADE,
-        related_name='res_cafe',
-        verbose_name='В кафе'
+        related_name='reservations',
+        verbose_name='Кафе'
     )
-    tables = models.ManyToManyField(
-        Table
+    table = models.ManyToManyField(
+        Table,
+        verbose_name='Столы'
     )
     sets = models.ManyToManyField(
-        'OrderSets', related_name='reservations_sets'
+        Set,
+        through='OrderSets',
+        verbose_name='Заказы'
     )
     date = models.DateField(
-        'Дата бронирования'
+        verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        'Имя клиента',
-        max_length=MAX_CHAR_LENGHT
+        max_length=100,
+        verbose_name='Имя клиента'
     )
     number = models.CharField(
-        'Номер телефона клиента',
-        max_length=MAX_CHAR_LENGHT
+        max_length=15,
+        verbose_name='Номер телефона клиента'
     )
     status = models.CharField(max_length=20,
                               choices=[
@@ -43,7 +46,7 @@ class Reservation(models.Model):
         ordering = ('date',)
 
     def __str__(self):
-        return f'В кафе {self.cafe}, для {self.name} на {self.date}'
+        return f'Бронь в кафе {self.cafe} для {self.name} на {self.date}'
 
 
 class OrderSets(models.Model):
@@ -51,13 +54,15 @@ class OrderSets(models.Model):
         Reservation,
         on_delete=models.CASCADE,
         related_name='order_sets',
-        default=None)
-    sets = models.ForeignKey(
+        verbose_name='Бронь'
+    )
+    set = models.ForeignKey(
         Set,
         on_delete=models.CASCADE,
-        related_name='order_sets')
-    quantity = models.IntegerField(
-        'Количество сета'
+        verbose_name='Сет'
+    )
+    quantity = models.PositiveIntegerField(
+        verbose_name='Количество сета'
     )
 
     class Meta:
@@ -65,4 +70,4 @@ class OrderSets(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'Заказ {self.sets} в количестве {self.quantity}'
+        return f'Заказ {self.set} в количестве {self.quantity}'
