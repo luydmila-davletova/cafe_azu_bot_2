@@ -1,20 +1,23 @@
-from django.contrib import admin
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from django.utils.html import format_html
-
-#from ..azu_bot_django.settings import MAX_CHAR_LENGHT
+from azu_bot_django.settings import (
+    MAX_CHAR_LENGHT,
+    MAX_DECIMAL_LENGHT,
+    MAX_DIGIT_LENGHT
+)
 
 
 class Dish(models.Model):
     name = models.CharField(
         'Название блюда',
-        max_length=256
+        max_length=MAX_CHAR_LENGHT
     )
     description = models.CharField(
         'Описание блюда',
-        max_length=256
+        max_length=MAX_CHAR_LENGHT,
+        default=False
+
     )
     image = models.ImageField(
         upload_to='dishes/',
@@ -34,12 +37,12 @@ class Dish(models.Model):
 class Set(models.Model):
     name = models.CharField(
         'Название сета',
-        max_length=256,
+        max_length=MAX_CHAR_LENGHT,
         unique=True
     )
     description = models.CharField(
         'Описание сета',
-        max_length=256
+        max_length=MAX_CHAR_LENGHT
     )
     dishes = models.ManyToManyField(
         Dish,
@@ -48,9 +51,9 @@ class Set(models.Model):
         blank=True
     )
     price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name='Цена сета'
+        verbose_name='Цена сета',
+        decimal_places=MAX_DECIMAL_LENGHT,
+        max_digits=MAX_DIGIT_LENGHT
     )
     quantity = models.PositiveIntegerField(
         verbose_name='Количество сетов'
@@ -79,7 +82,8 @@ class SetDish(models.Model):
     set = models.ForeignKey(Set, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(
-        verbose_name='Количество блюд в сете')
+        verbose_name='Количество блюд в сете'
+    )
 
     class Meta:
         verbose_name = 'Блюд в сете'

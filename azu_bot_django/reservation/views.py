@@ -1,10 +1,13 @@
+import json
+
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
+
 from .forms import BookingForm, LocationForm, ComboForm, DishesForm
 from .models import Reservation, OrderSets
 from cafe.models import Cafe
-import json
+
 
 
 @csrf_protect

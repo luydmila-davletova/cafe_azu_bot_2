@@ -16,7 +16,7 @@ class ProfileInline(admin.StackedInline):
 
 
 class CustomUserAdmin(UserAdmin):
-    inlines = (ProfileInline, )
+    inlines = (ProfileInline,)
 
 
 @receiver(post_save, sender=Profile)
@@ -26,8 +26,13 @@ def create_cafe_admin(sender, instance, created, **kwargs):
         existing_user = User.objects.filter(username=username).first()
 
         if not existing_user:
-            user = User.objects.create_user(username=username, password='default_password')
-            cafe_admin_group, created = Group.objects.get_or_create(name='Cafe Admin')
+            user = User.objects.create_user(
+                username=username,
+                password='default_password'
+            )
+            cafe_admin_group, created = Group.objects.get_or_create(
+                name='Cafe Admin'
+            )
             user.groups.add(cafe_admin_group)
             reservations_permissions = Permission.objects.filter(
                 content_type=ContentType.objects.get_for_model(Reservation)
@@ -35,7 +40,10 @@ def create_cafe_admin(sender, instance, created, **kwargs):
             order_sets_permissions = Permission.objects.filter(
                 content_type=ContentType.objects.get_for_model(OrderSets)
             )
-            user.user_permissions.add(*reservations_permissions, *order_sets_permissions)
+            user.user_permissions.add(
+                *reservations_permissions,
+                *order_sets_permissions
+            )
             instance.user = user
             instance.save()
 

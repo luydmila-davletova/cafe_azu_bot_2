@@ -1,4 +1,3 @@
-from pathlib import Path
 import os
 
 from dotenv import load_dotenv
@@ -17,7 +16,7 @@ MAX_CHAR_LENGHT = 256
 MAX_DIGIT_LENGHT = 10
 MAX_DECIMAL_LENGHT = 2
 
-AUTH_USER_MODEL = 'users.CustomUser'
+# AUTH_USER_MODEL = 'users.CustomUser'
 
 INSTALLED_APPS = [
     'cafe.apps.CafeConfig',
