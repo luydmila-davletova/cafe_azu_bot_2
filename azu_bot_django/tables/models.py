@@ -20,3 +20,21 @@ class Table(models.Model):
 
     def __str__(self):
         return f'Стол в {self.cafe} на {self.quantity} человек'
+
+
+class ReservationTable(models.Model):
+    table = models.ForeignKey(
+        Table,
+        on_delete=models.CASCADE,
+        verbose_name='Стол'
+    )
+    date = models.DateField(
+        'Дата бронирования'
+    )
+
+    class Meta:
+        verbose_name = 'Бронь стола'
+        verbose_name_plural = 'Брони стола'
+
+    def __str__(self):
+        return f'{self.table} занят на {self.date}'

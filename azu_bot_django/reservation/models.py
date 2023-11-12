@@ -1,5 +1,6 @@
 from django.db import models
 from cafe.models import Cafe
+from django.db.models import UniqueConstraint
 from menu.models import Set
 from tables.models import Table
 from azu_bot_django.settings import MAX_CHAR_LENGHT
@@ -68,6 +69,12 @@ class OrderSets(models.Model):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        constraints = [
+            UniqueConstraint(
+                fields=('reservation', 'set'),
+                name='unique_reservation_set'
+            ),
+        ]
 
     def __str__(self):
         return f'Заказ {self.set} в количестве {self.quantity}'
