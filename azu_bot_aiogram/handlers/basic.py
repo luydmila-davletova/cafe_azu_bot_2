@@ -36,9 +36,9 @@ async def route_to_cafe(message: Message, bot: Bot):
                          reply_markup=table_or_back_kbd())
 
 
-async def date_table(message: Message, bot: Bot):
+async def reserve_table(message: Message, bot: Bot):
     await message.answer('Введите дату в формате ДД.ММ (например 02.08)',
-                         reply_markup=date_or_back_kbd())
+                         reply_markup=reserve_or_back_kbd())
 
 
 async def person_per_table(message: Message, bot: Bot):
@@ -46,7 +46,7 @@ async def person_per_table(message: Message, bot: Bot):
                          reply_markup=people_per_table_kbd())
 
 
-async def name_for_dating(message: Message, bot: Bot):
+async def name_for_reserving(message: Message, bot: Bot):
     await message.answer('На чье имя бронируем стол?',
                          reply_markup=enter_name_kbd())
 
@@ -84,3 +84,18 @@ async def choose_pay_method(message: Message, bot: Bot):
     """Клиент выбирает способ оплаты сета."""
     await message.answer('Выберите способ оплаты',
                          reply_markup=choose_pay_type_kbd())
+
+
+async def no_free_table(message: Message, bot: Bot):
+    """Отсутствуют свободные столы."""
+    await message.answer('К сожалению нужного Вам столика нет в наличии.\n'
+                         'Можем предложить Вам соединить несколько столов '
+                         ' или забронировать стол в другом кафе нашей сети.',
+                         reply_markup=move_tables_or_change_cafe_kbd())
+
+
+async def choose_another_cafe(message: Message, bot: Bot):
+    """Выбрать кафе со свободными столами запрошенной вместимости."""
+    await message.answer(
+        '***Тут список кафе со свободными столами запрошенной вместимости***',
+        reply_markup=choose_another_cafe_kbd())

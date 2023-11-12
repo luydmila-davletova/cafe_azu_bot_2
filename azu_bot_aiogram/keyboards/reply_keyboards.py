@@ -69,7 +69,7 @@ def table_or_back_kbd():
     )
 
 
-def date_or_back_kbd():
+def reserve_or_back_kbd():
     """Выбрать дату бронирования стола или вернуться назад."""
 #    offset = timezone(timedelta(hours=3))
 #    day_after_tommorow = datetime.now(offset) + timedelta(days=2)
@@ -115,10 +115,10 @@ def move_tables_or_change_cafe_kbd():
     """Сдвигать столы или сменить кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Выбрать другое кафе')
-    keyboard_builder.button(text='Сдвигать столики')
+    keyboard_builder.button(text='Сдвигать столы')
     keyboard_builder.button(text='Назад')
     keyboard_builder.button(text='Отмена')
-    keyboard_builder.adjust(1, 1, 2)
+    keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
         one_time_keyboard=True,
@@ -129,10 +129,10 @@ def move_tables_or_change_cafe_kbd():
 def choose_another_cafe_kbd():
     """Выбрать другое кафе, если в текущем нет столов."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='ул. Чистопольская, 2')
-    keyboard_builder.button(text='ул. Петербургская, 52')
-    keyboard_builder.button(text='ул. Павлюхина, 91')
-    keyboard_builder.button(text='ул. Петербургская, 14')
+    keyboard_builder.button(text='Чистопольская, 2')
+    keyboard_builder.button(text='Петербургская, 52')
+    keyboard_builder.button(text='Павлюхина, 91')
+    keyboard_builder.button(text='Петербургская, 14')
     keyboard_builder.button(text='Назад')
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
@@ -143,10 +143,6 @@ def choose_another_cafe_kbd():
     )
 
 
-#  Для корректной работы клавиатуры ниже надо прописать в Dispatcher
-#  dp.message.register(get_name, F.text == 'На моё имя')
-#  и импортировать хэндлер:
-#  from azu_bot_aiogram.handlers.first_name import get_name
 def enter_name_kbd():
     """Отправить имя или вернуться назад."""
     keyboard_builder = ReplyKeyboardBuilder()
@@ -161,13 +157,6 @@ def enter_name_kbd():
     )
 
 
-#  Для корректной работы клавиатуры ниже надо прописать в Dispatcher
-#  dp.message.register(get_true_contact, F.contact, IsTrueContact())
-#  dp.message.register(get_fake_contact, F.contact)
-#  и импортировать хэндлер:
-#  from azu_bot_aiogram.handlers.first_name import (
-#  get_true_contact, get_fake_contact
-#  )
 def enter_phone_kbd():
     """Отправить номер телефона или вернуться назад."""
     keyboard_builder = ReplyKeyboardBuilder()
@@ -222,6 +211,19 @@ def choose_pay_type_kbd():
         resize_keyboard=True,
         one_time_keyboard=True,
         input_field_placeholder='Выберите способ оплаты.'
+    )
+
+
+def no_free_tables_kbd():
+    """Появляется в случае отсутствия свободных столов в кафе."""
+    keyboard_builder = ReplyKeyboardBuilder()
+    keyboard_builder.button(text='Выбрать другое кафе')
+    keyboard_builder.button(text='Сдвигать столы')
+    keyboard_builder.button(text='Назад')
+    keyboard_builder.button(text='Отмена')
+    keyboard_builder.adjust(2)
+    return keyboard_builder.as_markup(
+        resize_keyboard=True
     )
 
 
