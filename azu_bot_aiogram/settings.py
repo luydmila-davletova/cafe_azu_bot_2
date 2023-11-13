@@ -1,5 +1,6 @@
-from environs import Env
 from dataclasses import dataclass
+
+from environs import Env
 
 
 @dataclass
@@ -26,4 +27,5 @@ def get_settings(path: str):
         )
     )
 
-settings=get_settings('.env')
+
+settings = get_settings('.env')

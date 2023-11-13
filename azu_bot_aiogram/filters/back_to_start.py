@@ -1,7 +1,6 @@
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
-
 MOVE_BACK_COMMANDS = {
     'Вернуться к выбору кафе',
     'Отмена'

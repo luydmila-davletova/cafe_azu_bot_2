@@ -58,9 +58,11 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
 
 
 async def succesfull_payment(message: Message):
-    msg = ('Ваш заказ общей стоимостью: ' 
-          f'{message.successful_payment.total_amount // 100} '
-          f'{message.successful_payment.currency}. успешно оплачен!'
-          f'\r\nЗа 2 часа до начала ифтара мы пришлем Вам напоминание.' \
-          f'\r\nСпасибо! Хорошего дня!')
+    msg = (
+        'Ваш заказ общей стоимостью: '
+        f'{message.successful_payment.total_amount // 100} '
+        f'{message.successful_payment.currency}. успешно оплачен!'
+        f'\r\nЗа 2 часа до начала ифтара мы пришлем Вам напоминание.'
+        f'\r\nСпасибо! Хорошего дня!'
+    )
     await message.answer(msg)

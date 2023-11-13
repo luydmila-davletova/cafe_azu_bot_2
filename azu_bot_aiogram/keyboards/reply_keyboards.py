@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta, timezone
-
+# from datetime import datetime, timedelta, timezone
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
@@ -9,8 +8,7 @@ def start_kbd():
     keyboard_builder.button(text='Начать')
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
-        resize_keyboard=True,
-        one_time_keyboard=True
+        resize_keyboard=True
     )
 
 
@@ -20,8 +18,7 @@ def back_kbd():
     keyboard_builder.button(text='Назад')
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
-        resize_keyboard=True,
-        one_time_keyboard=True
+        resize_keyboard=True
     )
 
 
@@ -35,7 +32,6 @@ def cafe_select_kbd():
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Выберите адрес кафе.'
     )
 
@@ -51,7 +47,6 @@ def main_cafe_kbd():
     keyboard_builder.adjust(2, 2, 1)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Чем я могу помочь?'
     )
 
@@ -64,7 +59,6 @@ def table_or_back_kbd():
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Забронировать стол?'
     )
 
@@ -87,7 +81,6 @@ def reserve_or_back_kbd():
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Введите дату в формате ДД.ММ'
     )
 
@@ -106,7 +99,6 @@ def people_per_table_kbd():
     keyboard_builder.adjust(3, 3, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Сколько персон будет за столом?'
     )
 
@@ -121,7 +113,6 @@ def move_tables_or_change_cafe_kbd():
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Нет подхоящего стола. Как поступим?'
     )
 
@@ -138,7 +129,6 @@ def choose_another_cafe_kbd():
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Выберите адрес кафе.'
     )
 
@@ -152,7 +142,6 @@ def enter_name_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='На чьё имя бронируем стол?'
     )
 
@@ -168,7 +157,6 @@ def enter_phone_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Введите номер телефона.'
     )
 
@@ -183,7 +171,6 @@ def go_to_pay_or_choose_food_kbd():
     keyboard_builder.adjust(1, 1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Продолжить выбор или оплатить?'
     )
 
@@ -197,7 +184,6 @@ def check_order_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Проверьте Ваш заказ.'
     )
 
@@ -209,7 +195,6 @@ def choose_pay_type_kbd():
     keyboard_builder.adjust(1)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Выберите способ оплаты.'
     )
 
@@ -223,7 +208,8 @@ def no_free_tables_kbd():
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
-        resize_keyboard=True
+        resize_keyboard=True,
+        input_field_placeholder='Как поступим?'
     )
 
 

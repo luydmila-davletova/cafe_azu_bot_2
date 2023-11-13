@@ -2,13 +2,12 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command
 
 from filters.back_to_start import GoToStart
 from filters.is_adress import IsTrueAdress, IsAnotherCafe
 from filters.is_contact import IsTrueContact
 from filters.is_correct_date import IsCorrectDate
-from filters.is_first_name import IsTrueName
 from filters.is_correct_person_amount import IsPersonAmount, TooManyPersons
 from handlers.basic import (back_to_start, cafe_menu,
                             check_order_go_to_pay, choose_another_cafe,
@@ -17,11 +16,8 @@ from handlers.basic import (back_to_start, cafe_menu,
                             get_fake_contact, get_true_contact,
                             main_cafe_menu, name_for_reserving,
                             no_free_table, person_per_table, route_to_cafe)
-#from handlers.contact import get_true_contact, get_fake_contact
-from handlers.first_name import get_first_name
 from handlers.pay import order, pre_checkout_query, succesfull_payment
 from settings import settings
-from utils.commands import set_commands
 
 
 async def start():

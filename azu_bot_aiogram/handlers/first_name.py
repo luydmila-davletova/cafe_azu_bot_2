@@ -1,5 +1,5 @@
-from aiogram.types import Message
 from aiogram import Bot
+from aiogram.types import Message
 
 
 async def get_first_name(message: Message, bot: Bot, first_name: str):
