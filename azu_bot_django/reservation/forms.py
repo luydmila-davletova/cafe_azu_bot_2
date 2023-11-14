@@ -1,8 +1,8 @@
 from django import forms
 
-from reservation.models import Reservation
-from menu.models import Set, Dishes
 from cafe.models import Cafe
+from menu.models import Dishes, Set
+from reservation.models import Reservation
 
 
 class BookingForm(forms.ModelForm):

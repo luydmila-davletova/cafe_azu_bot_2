@@ -40,10 +40,6 @@ class Reservation(models.Model):
             ('cancelled', 'Отменено')],
         default=False
     )
-    sets_and_quantities = models.ManyToManyField(
-        'OrderSets',
-        related_name='sets_and_qtys_booking'
-    )
 
     class Meta:
         verbose_name = 'Бронь'
