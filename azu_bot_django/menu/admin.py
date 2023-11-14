@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
-from .models import Set, SetDish, Dish
+from .models import Dish, Set, SetDish
 
 
 class SetDishInline(admin.TabularInline):
@@ -28,9 +28,9 @@ class SetAdmin(admin.ModelAdmin):
         else:
             short_description = 'блюд'
         url = (
-                reverse("admin:menu_dish_changelist")
-                + "?"
-                + urlencode({"set__id": f"{obj.id}"})
+            reverse("admin:menu_dish_changelist")
+            + "?"
+            + urlencode({"set__id": f"{obj.id}"})
         )
         return format_html(
             '<a href="{}">{} {}</a>', url, count, short_description

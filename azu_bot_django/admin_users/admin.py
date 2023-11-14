@@ -1,13 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User, Permission, Group
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from reservation.models import OrderSets, Reservation
-from .models import Profile
 from cafe.models import Cafe
+from reservation.models import OrderSets, Reservation
+
+from .models import Profile
 
 
 class ProfileInline(admin.StackedInline):

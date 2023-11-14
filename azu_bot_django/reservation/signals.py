@@ -1,8 +1,8 @@
 # В файле signals.py вашего приложения reservation
+from django.contrib.auth.models import Group, Permission, User
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User, Permission, Group
 
 from admin_users.models import Profile
 from reservation.models import OrderSets, Reservation
