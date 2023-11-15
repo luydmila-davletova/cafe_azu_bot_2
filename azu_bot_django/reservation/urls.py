@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
      path('book_table/', views.book_table, name='book_table'),
      path('create_combo/', views.create_combo, name='create_combo'),
      path('create_dish/', views.create_dish, name='create_dish'),
+     path('create_table/', views.create_table, name='create_table'),
 ]

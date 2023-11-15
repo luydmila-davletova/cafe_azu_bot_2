@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
-from .models import Set, Dishes
+
+from .models import Dishes, Set
 
 
 @admin.register(Set)
