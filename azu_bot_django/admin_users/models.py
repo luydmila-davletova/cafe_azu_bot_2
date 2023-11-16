@@ -1,8 +1,7 @@
-from django.contrib.auth.models import AbstractUser, Permission, Group
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-
-
 from django.db import models
+
 from cafe.models import Cafe
 from reservation.models import OrderSets, Reservation
 

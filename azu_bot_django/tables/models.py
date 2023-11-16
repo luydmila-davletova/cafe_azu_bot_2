@@ -1,7 +1,7 @@
 from django.db import models
 
-from cafe.models import Cafe
 from azu_bot_django.settings import MAX_CHAR_LENGHT
+from cafe.models import Cafe
 
 TABLE_TYPE_CHOICES = [
     ('simple_table', 'Обычный стол'),

@@ -7,12 +7,9 @@ from django.utils.html import format_html
 from django.utils.http import urlencode
 
 from cafe.models import Cafe
-from tables.models import Table
 from reservation.models import OrderSets, Reservation
-from reservation.validation import (
-    tables_in_cafe,
-    tables_in_cafe_in_date
-)
+from reservation.validation import tables_in_cafe, tables_in_cafe_in_date
+from tables.models import Table
 
 
 class OrderSetsInline(admin.TabularInline):
