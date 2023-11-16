@@ -1,11 +1,24 @@
 from django.contrib import admin
 
-from tables.models import ReservationTable, Table
+from cafe.models import Cafe
+from tables.models import Table
 
 
 @admin.register(Table)
 class TableAdmin(admin.ModelAdmin):
     list_display = ("cafe", "quantity")
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        При создании нового объекта другие экземпляры моделей
+        будут связаны с кафе администратора
+        """
+        form = super(TableAdmin, self).get_form(request, obj, **kwargs)
+        if request.user.is_superuser:
+            return form
+        form.base_fields['cafe'].queryset = Cafe.objects.filter(
+            cafe=request.user.cafe.id)
+        return form
 
     def get_queryset(self, request):
         """
@@ -16,8 +29,3 @@ class TableAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(cafe=request.user.cafe.id)
-
-
-@admin.register(ReservationTable)
-class ReservationTableAdmin(admin.ModelAdmin):
-    list_display = ("table", "date")

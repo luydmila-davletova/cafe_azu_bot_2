@@ -1,7 +1,7 @@
 from django import forms
 
 from cafe.models import Cafe
-from menu.models import Dishes, Set
+from menu.models import Dish, Set
 from reservation.models import Reservation
 
 
@@ -28,7 +28,7 @@ class ComboForm(forms.ModelForm):
 
 class DishesForm(forms.ModelForm):
     class Meta:
-        model = Dishes
+        model = Dish
         fields = ['name', 'description']
 
 

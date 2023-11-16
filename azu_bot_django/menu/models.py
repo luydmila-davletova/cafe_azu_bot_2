@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.core.exceptions import ValidationError
+
 
 from azu_bot_django.settings import (MAX_CHAR_LENGHT, MAX_DECIMAL_LENGHT,
                                      MAX_DIGIT_LENGHT)
@@ -12,8 +14,7 @@ class Dish(models.Model):
     )
     description = models.CharField(
         'Описание блюда',
-        max_length=MAX_CHAR_LENGHT,
-        default=False
+        max_length=MAX_CHAR_LENGHT
 
     )
     image = models.ImageField(
@@ -52,10 +53,6 @@ class Set(models.Model):
         decimal_places=MAX_DECIMAL_LENGHT,
         max_digits=MAX_DIGIT_LENGHT
     )
-    quantity = models.PositiveIntegerField(
-        verbose_name='Количество сетов'
-    )
-
     image = models.ImageField(
         upload_to='sets/',
         verbose_name='Изображение сета',
@@ -91,6 +88,15 @@ class SetDish(models.Model):
                 name='unique_set_dish'
             ),
         ]
+
+    def clean(self):
+        if SetDish.objects.filter(
+            set=self.set,
+            dish=self.dish
+        ):
+            raise ValidationError(
+                "Такой сет уже существует!"
+            )
 
     def __str__(self):
         return f'{self.quantity} {self.dish.name}'
