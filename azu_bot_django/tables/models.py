@@ -16,8 +16,8 @@ class Table(models.Model):
         related_name='tables',
         verbose_name='В кафе'
     )
-    quantity = models.IntegerField(
-        'Размер стола'
+    quantity = models.PositiveSmallIntegerField(
+        verbose_name='Размер стола (количество мест)'
     )
     TABLE_TYPE_CHOICES = [
         ('simple_table', 'Место за столом'),
@@ -38,7 +38,25 @@ class Table(models.Model):
     class Meta:
         verbose_name = 'Стол'
         verbose_name_plural = 'Столы'
-        ordering = ("cafe", "quantity",)
+        ordering = ("cafe", "quantity")
+
+    def __str__(self):
+        return f'Стол в {self.cafe} на {self.quantity} человек'
+
+
+class ReservationTable(models.Model):
+    table = models.ForeignKey(
+        Table,
+        on_delete=models.CASCADE,
+        verbose_name='Стол'
+    )
+    date = models.DateField(
+        'Дата бронирования'
+    )
+
+    class Meta:
+        verbose_name = 'Бронь стола'
+        verbose_name_plural = 'Брони стола'
 
     def __str__(self):
         return f'Cтол на в {self.cafe} размером {self.quantity} человек'

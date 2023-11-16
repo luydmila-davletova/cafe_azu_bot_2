@@ -1,8 +1,10 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from azu_bot_django.settings import MAX_CHAR_LENGHT
 from cafe.models import Cafe
 from menu.models import Set
+from tables.models import Table
 
 
 class Reservation(models.Model):
@@ -12,16 +14,25 @@ class Reservation(models.Model):
         related_name='reservations',
         verbose_name='В кафе'
     )
+    table = models.ManyToManyField(
+        Table,
+        verbose_name='Столы'
+    )
+    sets = models.ManyToManyField(
+        Set,
+        through='OrderSets',
+        verbose_name='Заказы'
+    )
     date = models.DateField(
-        'Дата бронирования'
+        verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        'Имя клиента',
-        max_length=MAX_CHAR_LENGHT
+        max_length=100,
+        verbose_name='Имя клиента'
     )
     number = models.CharField(
-        'Номер телефона клиента',
-        max_length=MAX_CHAR_LENGHT
+        max_length=15,
+        verbose_name='Номер телефона клиента'
     )
     status = models.CharField(
         max_length=20,
@@ -35,14 +46,13 @@ class Reservation(models.Model):
         'OrderSets',
         related_name='sets_and_qtys_booking'
     )
-
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
         ordering = ('date',)
 
     def __str__(self):
-        return f'В кафе {self.cafe}, для {self.name} на {self.date}'
+        return f'Бронь в кафе {self.cafe} для {self.name} на {self.date}'
 
 
 class OrderSets(models.Model):
@@ -57,13 +67,20 @@ class OrderSets(models.Model):
         on_delete=models.CASCADE,
         related_name='order_sets'
     )
-    quantity = models.IntegerField(
-        'Количество сета'
+    quantity = models.PositiveIntegerField(
+        'Количество сета',
+        verbose_name='Бронь'
     )
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        constraints = [
+            UniqueConstraint(
+                fields=('reservation', 'set'),
+                name='unique_reservation_set'
+            ),
+        ]
 
     def __str__(self):
         return f'Заказ {self.sets} в количестве {self.quantity}'
