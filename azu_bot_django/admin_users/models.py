@@ -25,6 +25,11 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    def clean(self):
+        """Если пользователь админ - может заходить в админку"""
+        if self.is_cafe_admin:
+            self.is_staff = True
+
     def save(self, force_insert=False, force_update=False, *args, **kwargs):
         """
         Автоматическое добавление прав доступа при создании
