@@ -4,6 +4,7 @@ from settings import settings
 
 
 async def order(message: Message, bot: Bot):
+    """Перечень заказа и настройки для оплаты онлайн."""
     await bot.send_invoice(
         chat_id=message.chat.id,
         title='Окно оплаты заказа',
@@ -54,10 +55,12 @@ async def order(message: Message, bot: Bot):
 
 
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
+    """Обработка заказа. Поскольку у нас нет доставки, тут авто согласие."""
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
 async def succesfull_payment(message: Message):
+    """Сообщение об успешной оплате заказа."""
     msg = (
         'Ваш заказ общей стоимостью: '
         f'{message.successful_payment.total_amount // 100} '
