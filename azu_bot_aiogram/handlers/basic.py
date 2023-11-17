@@ -6,26 +6,26 @@ from keyboards.reply_keyboards import *
 from utils.states import StepsForm
 
 
-async def process_back(message: Message, bot: Bot, state: FSMContext):
-    """Переход на один уровень вверх по кнопке 'Назад'."""
-    current_state = str(await state.get_state())
-    previous_state = ''
-    if current_state == 'MENU_WATCH' or 'CAFE_ADDRESS':
-        previous_state = 'CAFE_INFO'
-        await state.set_state(previous_state)
-        await main_cafe_menu(message, bot, state)
-    elif current_state == 'CHOOSE_DATE':
-        previous_state = 'CAFE_INFO'
-        await state.set_state(previous_state)
-        await main_cafe_menu(message, bot, state)
-    elif current_state == 'PERSON_AMOUNT':
-        previous_state == 'CHOOSE_DATE'
-        await state.set_state(previous_state)
-        await reserve_table(message, bot, state)
-    elif current_state == 'NAME_STATE':
-        previous_state == 'PERSON_AMOUNT'
-        await state.set_state(previous_state)
-        await person_per_table(message, bot, state)
+# async def process_back(message: Message, bot: Bot, state: FSMContext):
+#    """Переход на один уровень вверх по кнопке 'Назад'."""
+#    current_state = await state.get_state()
+#    previous_state = ''
+#    if current_state == StepsForm.MENU_WATCH or StepsForm.CAFE_ADDRESS:
+#        previous_state = StepsForm.CAFE_INFO
+#        await state.set_state(previous_state)
+#        await main_cafe_menu(message, bot, state)
+#    elif current_state == StepsForm.CHOOSE_DATE:
+#        previous_state = StepsForm.CAFE_INFO
+#        await state.set_state(previous_state)
+#        await main_cafe_menu(message, bot, state)
+#    elif current_state == StepsForm.PERSON_AMOUNT:
+#        previous_state == StepsForm.CHOOSE_DATE
+#        await state.set_state(previous_state)
+#        await reserve_table(message, bot, state)
+#    elif current_state == StepsForm.NAME_STATE:
+#        previous_state == StepsForm.PERSON_AMOUNT
+#        await state.set_state(previous_state)
+#        await person_per_table(message, bot, state)
 #    if previous_state:
 #        await state.set_state(previous_state)
 #        if previous_state == 'CAFE_INFO':
@@ -34,10 +34,8 @@ async def process_back(message: Message, bot: Bot, state: FSMContext):
 #            await reserve_table(message, bot, state)
 #        elif previous_state == 'PERSON_AMOUNT':
 #            await name_for_reserving(message, bot, state)
-    else:
-        await message.answer('Нет предыдущего шага!')
-
-
+#    else:
+#        await message.answer('Нет предыдущего шага!')
 async def get_start(message: Message, bot: Bot, state: FSMContext):
     """Приветствие и выбор адреса кафе."""
     await message.answer('Привет! Я чат-бот сети кафе АЗУ! '
@@ -54,16 +52,57 @@ async def main_cafe_menu(message: Message, bot: Bot, state: FSMContext):
 
 async def back_to_start(message: Message, bot: Bot, state: FSMContext):
     """Переход в начало диалога по кнопке 'Отмена'."""
-    await message.answer('Привет! Я чат-бот сети кафе АЗУ! '
-                         'Пожалуйста выберите адрес:',
-                         reply_markup=cafe_select_kbd())
+    await get_start(message, bot, state)
     await state.set_state(StepsForm.CHOOSE_CAFE)
 
 
-async def get_contacts(message: Message, bot: Bot):
+async def back_to_cafe_menu(message: Message, bot: Bot, state: FSMContext):
+    """Переход в главное меню кафе по кнопке 'Назад'."""
+    await main_cafe_menu(message, bot, state)
+    await state.set_state(StepsForm.CAFE_INFO)
+
+
+async def back_to_date(message: Message, bot: Bot, state: FSMContext):
+    """Переход к выбору даты по кнопке 'Назад'."""
+    await choose_date(message, bot, state)
+    await state.set_state(StepsForm.CHOOSE_DATE)
+
+
+async def back_to_persons(message: Message, bot: Bot, state: FSMContext):
+    """Переход к выбору количества персон по кнопке 'Назад'."""
+    await person_per_table(message, bot, state)
+    await state.set_state(StepsForm.PERSON_AMOUNT)
+
+
+async def back_to_name(message: Message, bot: Bot, state: FSMContext):
+    """Переход к вводу имени по кнопке 'Назад'."""
+    await name_for_reserving(message, bot, state)
+    await state.set_state(StepsForm.NAME_STATE)
+
+
+async def back_to_no_table(message: Message, bot: Bot, state: FSMContext):
+    """Переход от выбора альтернативного кафе по кнопке 'Назад'."""
+    await no_free_table(message, bot, state)
+    await state.set_state(StepsForm.NO_FREE_TABLE)
+
+
+async def back_to_phone(message: Message, bot: Bot, state: FSMContext):
+    """Переход к вводу номера телефона по кнопке 'Назад'."""
+    await get_phone(message, bot, state)
+    await state.set_state(StepsForm.PHONE_STATE)
+
+
+async def back_to_set(message: Message, bot: Bot, state: FSMContext):
+    """Переход из заказа к началу выбора сетов по кнопке 'Назад'."""
+    await choose_set(message, bot, state)
+    await state.set_state(StepsForm.ORDER_STATE)
+
+
+async def get_contacts(message: Message, bot: Bot, state: FSMContext):
     """Страничка контактов выбранного кафе."""
     await message.answer('***Тут должны быть контакты выбранного кафе***',
                          reply_markup=back_kbd())
+    await state.set_state(StepsForm.CAFE_ADDRESS)
 
 
 async def cafe_menu(message: Message, bot: Bot, state: FSMContext):
@@ -80,9 +119,9 @@ async def route_to_cafe(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(StepsForm.CAFE_ADDRESS)
 
 
-async def reserve_table(message: Message, bot: Bot, state: FSMContext):
+async def choose_date(message: Message, bot: Bot, state: FSMContext):
     """Начало бронирования стола. Ввод даты бронирования."""
-    await message.answer('Введите дату в формате ДД.ММ (например 02.08)',
+    await message.answer('Введите дату в формате ДД.ММ (например 02.08.2024)',
                          reply_markup=reserve_or_back_kbd())
     await state.set_state(StepsForm.CHOOSE_DATE)
 
@@ -101,9 +140,16 @@ async def name_for_reserving(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(StepsForm.NAME_STATE)
 
 
-async def get_name(message: Message, bot: Bot, state: FSMContext):
-    """Получение номера телефона для брони стола."""
+async def get_my_name(message: Message, bot: Bot, state: FSMContext):
+    """Получение имени пользователя по кнопке 'На моё имя'."""
     await message.answer(f'{message.from_user.first_name}')
+    await state.set_state(StepsForm.NAME_STATE)
+    await get_phone(message, bot, state)
+
+
+async def get_phone(message: Message, bot: Bot, state: FSMContext):
+    """Получение номера телефона для брони стола."""
+#    await message.answer(f'{message.from_user.first_name}')
     await message.answer('Введите номер телефона для бронирования стола',
                          reply_markup=enter_phone_kbd())
     await state.set_state(StepsForm.PHONE_STATE)
@@ -116,10 +162,11 @@ async def choose_set(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(StepsForm.ORDER_STATE)
 
 
-async def get_true_contact(message: Message, bot: Bot, phone: str):
+async def get_true_contact(
+        message: Message, bot: Bot, phone: str, state: FSMContext):
     """Если заказчик правильно указал телефон, то в чат вернется номер."""
     await message.answer(f'{phone}')
-    await choose_set(message, bot)
+    await choose_set(message, bot, state)
 
 
 async def get_fake_contact(message: Message, bot: Bot, state: FSMContext):
@@ -136,10 +183,11 @@ async def check_order_go_to_pay(message: Message, bot: Bot, state: FSMContext):
     await state.set_state(StepsForm.ORDER_CHECK_PAY)
 
 
-async def choose_pay_method(message: Message, bot: Bot):
+async def choose_pay_method(message: Message, bot: Bot, state: FSMContext):
     """Клиент выбирает способ оплаты сета."""
     await message.answer('Выберите способ оплаты',
                          reply_markup=choose_pay_type_kbd())
+    await state.set_state(StepsForm.PAY_STATE)
 
 
 async def no_free_table(message: Message, bot: Bot, state: FSMContext):

@@ -1,9 +1,12 @@
 from aiogram import Bot
-from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
+from aiogram.fsm.context import FSMContext
+from aiogram.types import (LabeledPrice, Message, PreCheckoutQuery,
+                           ReplyKeyboardRemove)
 from settings import settings
+from utils.states import StepsForm
 
 
-async def order(message: Message, bot: Bot):
+async def order(message: Message, bot: Bot, state: FSMContext):
     """Перечень заказа и настройки для оплаты онлайн."""
     await bot.send_invoice(
         chat_id=message.chat.id,
@@ -49,7 +52,7 @@ async def order(message: Message, bot: Bot):
         protect_content=False,
         reply_to_message_id=None,
         allow_sending_without_reply=True,
-        reply_markup=None,
+        reply_markup=ReplyKeyboardRemove(),
         request_timeout=15
     )
 
@@ -59,7 +62,7 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
-async def succesfull_payment(message: Message):
+async def succesfull_payment(message: Message, state: FSMContext):
     """Сообщение об успешной оплате заказа."""
     msg = (
         'Ваш заказ общей стоимостью: '
@@ -68,4 +71,5 @@ async def succesfull_payment(message: Message):
         f'\r\nЗа 2 часа до начала ифтара мы пришлем Вам напоминание.'
         f'\r\nСпасибо! Хорошего дня!'
     )
-    await message.answer(msg)
+    await message.answer(msg, reply_markup=ReplyKeyboardRemove())
+    await state.set_state(StepsForm.FINAL_STATE)

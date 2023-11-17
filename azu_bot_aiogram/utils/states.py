@@ -1,4 +1,5 @@
-from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.state import State, StatesGroup
+
 
 class StepsForm(StatesGroup):
     CHOOSE_CAFE = State()
@@ -14,3 +15,5 @@ class StepsForm(StatesGroup):
     ORDER_STATE = State()
     IN_ORDER_STATE = State()
     ORDER_CHECK_PAY = State()
+    PAY_STATE = State()
+    FINAL_STATE = State()
