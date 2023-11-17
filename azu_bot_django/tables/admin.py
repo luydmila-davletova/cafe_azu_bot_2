@@ -3,6 +3,7 @@ from django.contrib import admin
 from tables.models import ReservationTable, Table
 
 
+
 @admin.register(Table)
 class TableAdmin(admin.ModelAdmin):
     list_display = ("cafe", "quantity")

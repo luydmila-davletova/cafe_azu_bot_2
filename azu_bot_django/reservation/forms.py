@@ -1,8 +1,10 @@
 from django import forms
+from django.db import models
 
 from cafe.models import Cafe
 from menu.models import Dishes, Set
 from reservation.models import Reservation
+from tables.models import Table
 
 
 class BookingForm(forms.ModelForm):
@@ -13,16 +15,27 @@ class BookingForm(forms.ModelForm):
         model = Reservation
         fields = ['date', 'cafe', 'name', 'number']
 
+    def clean_quantity(self):
+        cafe = self.cleaned_data.get('cafe')
+        quantity = self.cleaned_data.get('quantity')
+        if cafe and quantity:
+            total_table_capacity = Table.objects.filter(
+                cafe=cafe).aggregate(
+                    models.Sum('quantity'))['quantity__sum']
+            if total_table_capacity and quantity > total_table_capacity:
+                raise forms.ValidationError('Превышение допустимого кол-ва.')
+        return quantity
+
 
 class ComboForm(forms.ModelForm):
     class Meta:
         model = Set
         fields = ['name', 'description', 'dishes', 'price']
 
-    def validate_price(self):
+    def clean_price(self):
         price = self.cleaned_data.get('price')
         if price is not None and price <= 0:
-            raise forms.ValidationError("Цена должна быть больше нуля.")
+            raise forms.ValidationError('Цена должна быть больше нуля.')
         return price
 
 
@@ -36,3 +49,17 @@ class LocationForm(forms.ModelForm):
     class Meta:
         model = Cafe
         fields = ['name', 'address']
+
+
+class TableForm(forms.ModelForm):
+    class Meta:
+        model = Table
+        fields = ['name', 'cafe', 'quantity', 'table_type']
+
+    TABLE_TYPE_CHOICES = [
+        ('simple_table', 'Место за столом'),
+        ('bar_table', 'Барное место')]
+
+    table_type = forms.ChoiceField(
+        choices=TABLE_TYPE_CHOICES,
+        label='Table Type')

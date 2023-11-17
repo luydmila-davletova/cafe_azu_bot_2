@@ -7,8 +7,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
-from reservation.models import OrderSets, Reservation
-
+from .models import OrderSets, Reservation
 
 class OrderSetsInline(admin.TabularInline):
     model = OrderSets
