@@ -16,7 +16,7 @@ class SetDishInline(admin.TabularInline):
 class SetAdmin(admin.ModelAdmin):
     list_display = (
         "name", "description",
-        "price", "quantity",
+        "price",
         "display_image"
     )
     search_fields = ("name",)

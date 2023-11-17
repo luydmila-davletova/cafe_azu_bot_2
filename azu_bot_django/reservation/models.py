@@ -1,10 +1,15 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import MAX_CHAR_LENGHT
+from azu_bot_django.settings import MAX_CHAR_LENGHT, MAX_DIGIT_LENGHT
 from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
+
+STATUS_DICT = [
+    ('booked', 'Забронировано'),
+    ('cancelled', 'Отменено')
+]
 
 
 class Reservation(models.Model):
@@ -12,7 +17,7 @@ class Reservation(models.Model):
         Cafe,
         on_delete=models.CASCADE,
         related_name='reservations',
-        verbose_name='В кафе'
+        verbose_name='Кафе',
     )
     table = models.ManyToManyField(
         Table,
@@ -27,19 +32,17 @@ class Reservation(models.Model):
         verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        max_length=100,
+        max_length=MAX_CHAR_LENGHT,
         verbose_name='Имя клиента'
     )
     number = models.CharField(
-        max_length=15,
+        max_length=MAX_DIGIT_LENGHT,
         verbose_name='Номер телефона клиента'
     )
     status = models.CharField(
-        max_length=20,
-        choices=[
-            ('booked', 'Забронировано'),
-            ('cancelled', 'Отменено')
-        ],
+        max_length=MAX_CHAR_LENGHT,
+        choices=STATUS_DICT,
+        verbose_name='Статус брони'
         default=None
     )
     sets_and_quantities = models.ManyToManyField(
@@ -59,6 +62,7 @@ class OrderSets(models.Model):
     reservation = models.ForeignKey(
         Reservation,
         on_delete=models.CASCADE,
+        verbose_name='Бронь'
         related_name='order_sets',
         default=None
     )
@@ -68,8 +72,7 @@ class OrderSets(models.Model):
         related_name='order_sets'
     )
     quantity = models.PositiveIntegerField(
-        'Количество сета',
-        verbose_name='Бронь'
+        'Количество сета'
     )
 
     class Meta:

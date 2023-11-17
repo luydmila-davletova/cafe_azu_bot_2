@@ -14,17 +14,12 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 MAX_CHAR_LENGHT = 256
-MAX_DIGIT_LENGHT = 10
+MAX_DIGIT_LENGHT = 15
 MAX_DECIMAL_LENGHT = 2
 
-# AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'admin_users.CustomUser'
 
 INSTALLED_APPS = [
-    'cafe.apps.CafeConfig',
-    'menu.apps.MenuConfig',
-    'reservation.apps.ReservationConfig',
-    'admin_users.apps.AdminUsersConfig',
-    'tables.apps.TablesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,7 +28,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'ckeditor',
-
+    'cafe',
+    'menu',
+    'reservation',
+    'admin_users',
+    'tables',
 ]
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
