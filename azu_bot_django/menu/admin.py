@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
+from .models import Dishes, Set
 from .models import Dish, Set, SetDish
 
 

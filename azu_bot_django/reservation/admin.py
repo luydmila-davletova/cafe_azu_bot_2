@@ -11,6 +11,7 @@ from reservation.models import OrderSets, Reservation
 from reservation.validation import tables_in_cafe, tables_in_cafe_in_date
 from tables.models import Table
 
+from .models import OrderSets, Reservation
 
 class OrderSetsInline(admin.TabularInline):
     model = OrderSets
