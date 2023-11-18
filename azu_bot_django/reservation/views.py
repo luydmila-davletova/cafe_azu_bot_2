@@ -1,13 +1,16 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
-from .forms import BookingForm, LocationForm, ComboForm, DishesForm, TableForm
-from .models import Reservation, OrderSets, TableReservation
-from menu.models import Set
-from cafe.models import Cafe
 import json
-from tables.models import Table
+
 from django.db import transaction
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_protect
+
+from cafe.models import Cafe
+from menu.models import Set
+from tables.models import Table
+
+from .forms import BookingForm, ComboForm, DishesForm, LocationForm, TableForm
+from .models import OrderSets, Reservation, TableReservation
 
 
 @csrf_protect
