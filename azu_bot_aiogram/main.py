@@ -4,6 +4,7 @@ import logging
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, or_f
 from aiogram.fsm.storage.memory import MemoryStorage
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from emoji import emojize
 
 from filters.back_to_start import GoToStart
@@ -21,6 +22,7 @@ from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             main_cafe_menu, name_for_reserving,
                             no_free_table, person_per_table, route_to_cafe)
 from handlers.pay import order, pre_checkout_query, succesfull_payment
+from middlewares.appshed_middelware import SchedulerMiddleware
 from settings import settings
 from utils.states import StepsForm
 
@@ -34,12 +36,16 @@ async def start():
     bot = Bot(token=settings.bots.bot_token)
 
     dp = Dispatcher(storage=MemoryStorage())
+    scheduler = AsyncIOScheduler(timezone='Asia/Yekaterinburg')
+    scheduler.start()
+    dp.update.middleware.register(SchedulerMiddleware(scheduler))
+
     dp.message.register(
         order, F.text == 'Оплатить через ЮКасса', StepsForm.PAY_STATE
     )
     dp.pre_checkout_query.register(pre_checkout_query)
     dp.message.register(
-        succesfull_payment, F.successful_payment, StepsForm.PAY_STATE
+        succesfull_payment, F.successful_payment, StepsForm.PAY_STATE,
     )
     dp.message.register(get_start, Command(commands=['start', 'run']))
     dp.message.register(get_true_contact, F.contact, IsTrueContact())

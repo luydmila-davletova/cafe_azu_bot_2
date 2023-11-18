@@ -1,7 +1,11 @@
+from datetime import datetime, timedelta
+
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
-from aiogram.types import (LabeledPrice, Message, PreCheckoutQuery,
-                           ReplyKeyboardRemove)
+from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from handlers.appsched import send_reminder
 from settings import settings
 from utils.states import StepsForm
 
@@ -52,7 +56,7 @@ async def order(message: Message, bot: Bot, state: FSMContext):
         protect_content=False,
         reply_to_message_id=None,
         allow_sending_without_reply=True,
-        reply_markup=ReplyKeyboardRemove(),
+        reply_markup=None,
         request_timeout=15
     )
 
@@ -62,7 +66,12 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 
-async def succesfull_payment(message: Message, state: FSMContext):
+async def succesfull_payment(
+        message: Message,
+        bot: Bot,
+        state: FSMContext,
+        apscheduler: AsyncIOScheduler
+):
     """Сообщение об успешной оплате заказа."""
     msg = (
         'Ваш заказ общей стоимостью: '
@@ -71,5 +80,12 @@ async def succesfull_payment(message: Message, state: FSMContext):
         f'\r\nЗа 2 часа до начала ифтара мы пришлем Вам напоминание.'
         f'\r\nСпасибо! Хорошего дня!'
     )
-    await message.answer(msg, reply_markup=ReplyKeyboardRemove())
+    await message.answer(msg)
     await state.set_state(StepsForm.FINAL_STATE)
+    print(datetime.now())
+    apscheduler.add_job(
+        send_reminder,
+        trigger='date',
+        run_date=datetime.now() + timedelta(seconds=10),
+        kwargs={'bot': bot, 'chat_id': message.from_user.id}
+    )
