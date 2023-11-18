@@ -1,6 +1,5 @@
 from django import forms
 from django.db import models
-
 from cafe.models import Cafe
 from menu.models import Dishes, Set
 from reservation.models import Reservation
@@ -52,14 +51,27 @@ class LocationForm(forms.ModelForm):
 
 
 class TableForm(forms.ModelForm):
-    class Meta:
-        model = Table
-        fields = ['name', 'cafe', 'quantity', 'table_type']
-
     TABLE_TYPE_CHOICES = [
-        ('simple_table', 'Место за столом'),
-        ('bar_table', 'Барное место')]
-
+        ('simple_table', 'Простой стол'),
+        ('bar_table', 'Барный стол')
+    ]
     table_type = forms.ChoiceField(
         choices=TABLE_TYPE_CHOICES,
-        label='Table Type')
+        label='Тип места'
+    )
+
+    class Meta:
+        model = Table
+        fields = ['name', 'cafe', 'table_type', 'quantity']
+
+    quantity = forms.IntegerField(label='Количество', initial=1)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        table_type = cleaned_data.get('table_type')
+        quantity = cleaned_data.get('quantity')
+
+        if table_type == 'bar_table' and quantity != 1:
+            raise forms.ValidationError(
+                'Барное место может быть только = 1')
+        return cleaned_data

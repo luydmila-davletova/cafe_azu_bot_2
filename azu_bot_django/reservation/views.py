@@ -1,30 +1,26 @@
-import json
-
-from django.db import transaction
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_protect
-
-from cafe.models import Cafe
+from .forms import BookingForm, LocationForm, ComboForm, DishesForm, TableForm
+from .models import Reservation, OrderSets, TableReservation
 from menu.models import Set
-from tables.models import BarTable, SimpleTable
-
-from .forms import BookingForm, ComboForm, DishesForm, LocationForm, TableForm
-from .models import (BarTableReservation, OrderSets, Reservation,
-                     SimpleTableReservation)
+from cafe.models import Cafe
+import json
+from tables.models import Table
+from django.db import transaction
 
 
 @csrf_protect
 def index(request):
-    context = {'app_name': 'AzuBot'}
-    return JsonResponse(context)
+    context = {
+        'app_name': 'AzuBot',
+    }
+    return render(request, 'index.html', context)
 
 
 @csrf_protect
 @transaction.atomic
 def book_table(request):
-    available_simple_tables = None
-    available_bar_tables = None
     if request.method == 'POST':
         booking_form = BookingForm(request.POST)
         if booking_form.is_valid():
@@ -35,12 +31,13 @@ def book_table(request):
             set_instance = booking_form.cleaned_data.get('set')
             quantity = booking_form.cleaned_data.get('quantity')
             if quantity == 1:
-                available_bar_tables = BarTable.objects.select_for_update(
+                available_bar_tables = Table.objects.select_for_update(
                 ).filter(
                     cafe__id=cafe.id,
+                    table_type='bar_table',
                 ).exclude(
-                    reservations_bar_table__reservation__date=date,
-                    reservations_bar_table__reservation__status='booked'
+                    table_reservations__reservation__date=date,
+                    table_reservations__reservation__status='booked'
                 )
                 bar_table = available_bar_tables.filter(
                     quantity__gte=1).first()
@@ -52,8 +49,8 @@ def book_table(request):
                         number=number,
                         status='booked'
                     )
-                    BarTableReservation.objects.create(
-                        bar_table=bar_table,
+                    TableReservation.objects.create(
+                        table=bar_table,
                         reservation=reservation,
                         quantity=1
                     )
@@ -63,25 +60,24 @@ def book_table(request):
                         quantity=1
                     )
                     order_sets.save()
-                    context = {
+                    return JsonResponse({
                         'status': 'success',
                         'message': reservation.id,
-                        'booking_form': {},
                         'bookings': list(Reservation.objects.values())
-                    }
-                    return JsonResponse(context)
-            available_simple_tables = SimpleTable.objects.select_for_update(
-            ).filter(
+                    })
+            available_simple_tables = Table.objects.select_for_update().filter(
                 cafe__id=cafe.id,
+                table_type='simple_table',
             ).exclude(
-                reservations_simple_table__reservation__date=date,
-                reservations_simple_table__reservation__status='booked'
+                table_reservations__reservation__date=date,
+                table_reservations__reservation__status='booked'
             )
-            available_bar_tables = BarTable.objects.select_for_update().filter(
+            available_bar_tables = Table.objects.select_for_update().filter(
                 cafe__id=cafe.id,
+                table_type='bar_table',
             ).exclude(
-                reservations_bar_table__reservation__date=date,
-                reservations_bar_table__reservation__status='booked'
+                table_reservations__reservation__date=date,
+                table_reservations__reservation__status='booked'
             )
             single_table = available_simple_tables.filter(
                 quantity__gte=quantity).first()
@@ -93,8 +89,8 @@ def book_table(request):
                     number=number,
                     status='booked'
                 )
-                SimpleTableReservation.objects.create(
-                    simple_table=single_table,
+                TableReservation.objects.create(
+                    table=single_table,
                     reservation=reservation,
                     quantity=quantity
                 )
@@ -104,20 +100,11 @@ def book_table(request):
                     quantity=quantity
                 )
                 order_sets.save()
-                context = {
+                return JsonResponse({
                     'status': 'success',
                     'message': reservation.id,
-                    'booking_form': {
-                        'date': date,
-                        'cafe': cafe.id,
-                        'name': name,
-                        'number': number,
-                        'set': set_instance.id,
-                        'quantity': quantity,
-                    },
                     'bookings': list(Reservation.objects.values())
-                }
-                return JsonResponse(context)
+                })
             else:
                 merged_tables = merge_tables(available_simple_tables, quantity)
                 if merged_tables:
@@ -129,8 +116,8 @@ def book_table(request):
                         status='booked'
                     )
                     for table in merged_tables:
-                        SimpleTableReservation.objects.create(
-                            simple_table=table,
+                        TableReservation.objects.create(
+                            table=table,
                             reservation=reservation,
                             quantity=table.quantity
                         )
@@ -141,13 +128,11 @@ def book_table(request):
                         quantity=quantity
                     )
                     order_sets.save()
-                    context = {
+                    return JsonResponse({
                         'status': 'success',
                         'message': reservation.id,
-                        'booking_form': {},
                         'bookings': list(Reservation.objects.values())
-                    }
-                    return JsonResponse(context)
+                    })
                 else:
                     return JsonResponse({
                         'status': 'error',
@@ -156,19 +141,18 @@ def book_table(request):
         else:
             return JsonResponse({
                 'status': 'error',
-                'message': 'Форма заполнена неверно.'
+                'message': 'Ошибка заполнения.'
             })
     else:
         booking_form = BookingForm()
-        context = {
-            'booking_form': {},
+        return JsonResponse({
+            'booking_form': booking_form,
             'bookings': list(Reservation.objects.values())
-        }
-        return JsonResponse(context)
+        })
 
 
 def merge_tables(available_tables, required_quantity):
-    available_tables = available_tables.order_by('quantity')
+    available_tables = available_tables.order_by('-quantity')
     merged_tables = []
     total_quantity = 0
     for table in available_tables:
@@ -177,6 +161,32 @@ def merge_tables(available_tables, required_quantity):
         if total_quantity >= required_quantity:
             return merged_tables
     return None
+
+
+def make_reservation_after_merge(merged_tables, date, cafe,
+                                 name, number, set_instance,
+                                 quantity):
+    reservation = Reservation.objects.create(
+        date=date,
+        cafe=cafe,
+        name=name,
+        number=number,
+        status='booked'
+    )
+    for table in merged_tables:
+        TableReservation.objects.create(
+            table=table,
+            reservation=reservation,
+            quantity=table.quantity
+        )
+        quantity -= table.quantity
+    order_sets = OrderSets(
+        reservation=reservation,
+        sets=set_instance,
+        quantity=quantity
+    )
+    order_sets.save()
+    return reservation.id
 
 
 @csrf_protect
@@ -189,15 +199,16 @@ def create_location(request):
             address = form.cleaned_data['address']
             location = Cafe(name=name, address=address)
             location.save()
-            context = {'message': 'Создано'}
-            return JsonResponse(context)
+            return JsonResponse({'message': 'Создано'})
         else:
             return JsonResponse({'status': 'error',
                                  'message': 'Ошибка данных.'})
     else:
         form = LocationForm()
-    context = {'form': form, 'existing_locations': list(
-        existing_locations.values())}
+    context = {
+        'form': form,
+        'existing_locations': list(existing_locations.values()),
+    }
     return JsonResponse(context)
 
 
@@ -208,15 +219,17 @@ def update_location(request, location_id):
         form = LocationForm(request.POST, instance=location)
         if form.is_valid():
             form.save()
-            context = {'status': 'success',
-                       'message': 'Адрес успешно обновлен'}
-            return JsonResponse(context)
+            return JsonResponse({'status': 'success',
+                                 'message': 'Адрес успешно обновлен'})
         else:
             return JsonResponse({'status': 'error',
                                  'message': 'Ошибка данных.'})
     else:
         form = LocationForm(instance=location)
-        context = {'form': form, 'location': location}
+        context = {
+            'form': form,
+            'location': list(location.values())
+        }
     return JsonResponse(context)
 
 
@@ -226,9 +239,8 @@ def delete_location(request, location_id):
     if request.method == 'POST':
         if location:
             location.delete()
-            context = {'status': 'success',
-                       'message': 'Адрес успешно удален'}
-            return JsonResponse(context)
+            return JsonResponse({'status': 'success',
+                                 'message': 'Адрес успешно удален'})
         else:
             return JsonResponse({'status': 'error',
                                  'message': 'Адрес не найден.'})
@@ -266,16 +278,18 @@ def create_combo(request):
         form = ComboForm(request.POST)
         if form.is_valid():
             form.save()
-            response_data = {'status': 'success',
-                             'message': 'Комбо-сет успешно создан'}
-            return JsonResponse(response_data)
+            return JsonResponse({'status': 'success',
+                                 'message': 'Комбо-сет успешно создан'})
         else:
             errors = form.errors.as_json()
-            response_data = {'status': 'error', 'errors': errors}
-            return JsonResponse(response_data, status=400)
+            return JsonResponse({'status': 'error',
+                                 'errors': errors}, status=400)
     else:
         form = ComboForm()
-    context = {'form': form, 'combos': list(combos.values())}
+    context = {
+        'form': form,
+        'combos': list(combos.values()),
+    }
     return JsonResponse(context)
 
 
@@ -285,13 +299,15 @@ def create_dish(request):
         form = DishesForm(request.POST)
         if form.is_valid():
             form.save()
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'success',
+                                 'message': 'Блюдо успешно создано'})
     else:
         form = DishesForm()
     context = {'form': form}
     return JsonResponse(context)
 
 
+@csrf_protect
 def create_table(request):
     if request.method == 'POST':
         table_form = TableForm(request.POST)
@@ -301,14 +317,20 @@ def create_table(request):
             capacity = table_form.cleaned_data.get('quantity')
             table_type = table_form.cleaned_data.get('table_type')
             if table_type == 'simple_table':
-                SimpleTable.objects.create(name=name,
-                                           cafe=cafe,
-                                           quantity=capacity)
+                Table.objects.create(name=name,
+                                     cafe=cafe,
+                                     quantity=capacity,
+                                     table_type='simple_table')
             elif table_type == 'bar_table':
-                BarTable.objects.create(name=name,
-                                        cafe=cafe,
-                                        quantity=capacity)
-            return JsonResponse({'status': 'success'})
+                Table.objects.create(name=name,
+                                     cafe=cafe,
+                                     quantity=capacity,
+                                     table_type='bar_table')
+            return JsonResponse({'status': 'success',
+                                 'message': 'Стол успешно создан'})
+        else:
+            return JsonResponse({'status': 'error',
+                                 'message': 'Ошибка данных.'})
     else:
         table_form = TableForm()
     context = {'table_form': table_form}

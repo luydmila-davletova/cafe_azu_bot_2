@@ -13,7 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MAX_CHAR_LENGHT = 256
+MAX_CHAR_LENGTH = 256
 
 INSTALLED_APPS = [
     'cafe.apps.CafeConfig',

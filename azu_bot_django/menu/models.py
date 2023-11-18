@@ -1,16 +1,16 @@
 from django.db import models
 
-from azu_bot_django.settings import MAX_CHAR_LENGHT
+from azu_bot_django.settings import MAX_CHAR_LENGTH
 
 
 class Set(models.Model):
     name = models.CharField(
         'Название сета',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
     description = models.CharField(
         'Описание сета',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
     dishes = models.ManyToManyField(
         'Dishes'
@@ -31,11 +31,11 @@ class Set(models.Model):
 class Dishes(models.Model):
     name = models.CharField(
         'Название блюда',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
     description = models.CharField(
         'Описание блюда',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
 
     class Meta:
