@@ -32,12 +32,12 @@ class Reservation(models.Model):
         verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        max_length=MAX_CHAR_LENGHT,
-        verbose_name='Имя клиента'
+        'Имя клиента',
+        max_length=MAX_CHAR_LENGTH
     )
     number = models.CharField(
-        max_length=MAX_DIGIT_LENGHT,
-        verbose_name='Номер телефона клиента'
+        'Номер телефона клиента',
+        max_length=MAX_DIGIT_LENGHT
     )
     status = models.CharField(
         max_length=MAX_CHAR_LENGHT,
@@ -47,7 +47,7 @@ class Reservation(models.Model):
     )
     sets_and_quantities = models.ManyToManyField(
         'OrderSets',
-        related_name='sets_and_qtys_booking'
+        related_name='reservations'
     )
     class Meta:
         verbose_name = 'Бронь'
@@ -60,7 +60,7 @@ class Reservation(models.Model):
 
 class OrderSets(models.Model):
     reservation = models.ForeignKey(
-        Reservation,
+        'reservation.Reservation',
         on_delete=models.CASCADE,
         verbose_name='Бронь'
         related_name='order_sets',
@@ -89,37 +89,21 @@ class OrderSets(models.Model):
         return f'Заказ {self.sets} в количестве {self.quantity}'
 
 
-class SimpleTableReservation(models.Model):
-    simple_table = models.ForeignKey(
-        'tables.SimpleTable',
+class TableReservation(models.Model):
+    table = models.ForeignKey(
+        'tables.Table',
         on_delete=models.CASCADE,
-        related_name='reservations_simple_table',
-        verbose_name='Забронированный простой стол'
+        related_name='table_reservations',
+        verbose_name='Забронированный стол'
     )
     reservation = models.ForeignKey(
         Reservation,
         on_delete=models.CASCADE,
-        related_name='simple_tables',
+        related_name='table_reservations',
         verbose_name='Бронь'
     )
-    quantity = models.IntegerField(
-        'Количество мест'
-    )
+    quantity = models.IntegerField('Количество мест')
 
-
-class BarTableReservation(models.Model):
-    bar_table = models.ForeignKey(
-        'tables.BarTable',
-        on_delete=models.CASCADE,
-        related_name='reservations_bar_table',
-        verbose_name='Забронированный барный стол'
-    )
-    reservation = models.ForeignKey(
-        Reservation,
-        on_delete=models.CASCADE,
-        related_name='bar_tables',
-        verbose_name='Бронь'
-    )
-    quantity = models.IntegerField(
-        'Количество мест'
-    )
+    class Meta:
+        verbose_name = 'Бронь стола'
+        verbose_name_plural = 'Брони столов'

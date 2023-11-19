@@ -8,17 +8,14 @@ from azu_bot_django.settings import (
   MAX_DIGIT_LENGHT
 )
 
-
-class Dish(models.Model):
+class Dishes(models.Model):
     name = models.CharField(
         'Название блюда',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
     description = models.CharField(
         'Описание блюда',
-        max_length=MAX_CHAR_LENGHT
-
-    )
+        max_length=MAX_CHAR_LENGTH
     image = models.ImageField(
         upload_to='dishes/',
         verbose_name='Изображение блюда',
@@ -42,10 +39,10 @@ class Set(models.Model):
     )
     description = models.CharField(
         'Описание сета',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
     dishes = models.ManyToManyField(
-        Dish,
+        Dishes,
         through='SetDish',
         verbose_name='Блюда',
         blank=True
@@ -76,7 +73,7 @@ class SetDish(models.Model):
     Связующий класс между Сетами(Set) и блюдами(Dish)
     """
     set = models.ForeignKey(Set, on_delete=models.CASCADE)
-    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+    dish = models.ForeignKey(Dishes, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(
         verbose_name='Количество блюд в сете'
     )

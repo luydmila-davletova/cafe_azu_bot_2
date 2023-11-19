@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import MAX_CHAR_LENGHT
+from azu_bot_django.settings import MAX_CHAR_LENGTH
 
 
 class Cafe(models.Model):
@@ -17,7 +17,7 @@ class Cafe(models.Model):
     )
     number = models.CharField(
         'Номер кафе',
-        max_length=MAX_CHAR_LENGHT
+        max_length=MAX_CHAR_LENGTH
     )
 
     class Meta:
