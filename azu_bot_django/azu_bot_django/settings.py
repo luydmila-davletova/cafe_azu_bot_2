@@ -13,13 +13,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-MAX_CHAR_LENGTH = 256
+MAX_CHAR_LENGHT = 256
+MAX_DIGIT_LENGHT = 15
+MAX_DECIMAL_LENGHT = 2
+
+AUTH_USER_MODEL = 'admin_users.CustomUser'
 
 INSTALLED_APPS = [
-    'cafe.apps.CafeConfig',
-    'menu.apps.MenuConfig',
-    'reservation.apps.ReservationConfig',
-    'tables.apps.TablesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,7 +27,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'ckeditor',
+    'cafe',
+    'menu',
+    'reservation',
+    'admin_users',
+    'tables',
 ]
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -95,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 

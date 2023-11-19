@@ -1,8 +1,15 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import MAX_CHAR_LENGTH
+from azu_bot_django.settings import MAX_CHAR_LENGHT, MAX_DIGIT_LENGHT
 from cafe.models import Cafe
 from menu.models import Set
+from tables.models import Table
+
+STATUS_DICT = [
+    ('booked', 'Забронировано'),
+    ('cancelled', 'Отменено')
+]
 
 
 class Reservation(models.Model):
@@ -10,10 +17,19 @@ class Reservation(models.Model):
         Cafe,
         on_delete=models.CASCADE,
         related_name='reservations',
-        verbose_name='В кафе'
+        verbose_name='Кафе',
+    )
+    table = models.ManyToManyField(
+        Table,
+        verbose_name='Столы'
+    )
+    sets = models.ManyToManyField(
+        Set,
+        through='OrderSets',
+        verbose_name='Заказы'
     )
     date = models.DateField(
-        'Дата бронирования'
+        verbose_name='Дата бронирования'
     )
     name = models.CharField(
         'Имя клиента',
@@ -21,34 +37,32 @@ class Reservation(models.Model):
     )
     number = models.CharField(
         'Номер телефона клиента',
-        max_length=MAX_CHAR_LENGTH
+        max_length=MAX_DIGIT_LENGHT
     )
     status = models.CharField(
-        max_length=20,
-        choices=[
-            ('booked', 'Забронировано'),
-            ('cancelled', 'Отменено')
-        ],
+        max_length=MAX_CHAR_LENGHT,
+        choices=STATUS_DICT,
+        verbose_name='Статус брони'
         default=None
     )
     sets_and_quantities = models.ManyToManyField(
         'OrderSets',
         related_name='reservations'
     )
-
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
         ordering = ('date',)
 
     def __str__(self):
-        return f'В кафе {self.cafe}, для {self.name} на {self.date}'
+        return f'Бронь в кафе {self.cafe} для {self.name} на {self.date}'
 
 
 class OrderSets(models.Model):
     reservation = models.ForeignKey(
         'reservation.Reservation',
         on_delete=models.CASCADE,
+        verbose_name='Бронь'
         related_name='order_sets',
         default=None
     )
@@ -57,13 +71,19 @@ class OrderSets(models.Model):
         on_delete=models.CASCADE,
         related_name='order_sets'
     )
-    quantity = models.IntegerField(
+    quantity = models.PositiveIntegerField(
         'Количество сета'
     )
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        constraints = [
+            UniqueConstraint(
+                fields=('reservation', 'set'),
+                name='unique_reservation_set'
+            ),
+        ]
 
     def __str__(self):
         return f'Заказ {self.sets} в количестве {self.quantity}'

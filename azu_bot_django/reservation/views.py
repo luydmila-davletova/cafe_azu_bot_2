@@ -9,8 +9,18 @@ from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
 
-from .forms import BookingForm, ComboForm, DishesForm, LocationForm, TableForm
-from .models import OrderSets, Reservation, TableReservation
+from .forms import (
+  BookingForm,
+  ComboForm,
+  DishesForm,
+  LocationForm,
+  TableForm
+)
+from .models import (
+  OrderSets,
+  Reservation,
+  TableReservation
+)
 
 
 @csrf_protect
