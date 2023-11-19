@@ -87,5 +87,7 @@ async def succesfull_payment(
         send_reminder,
         trigger='date',
         run_date=datetime.now() + timedelta(seconds=10),
-        kwargs={'bot': bot, 'chat_id': message.from_user.id}
+        kwargs={
+            'bot': bot, 'chat_id': message.from_user.id, 'state': state
+        }
     )
