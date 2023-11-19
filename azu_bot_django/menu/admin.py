@@ -3,8 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
-from .models import Dishes, Set
-from .models import Dish, Set, SetDish
+from .models import Dishes, Set, SetDish
 
 
 class SetDishInline(admin.TabularInline):
@@ -49,6 +48,6 @@ class SetAdmin(admin.ModelAdmin):
     display_image.short_description = 'Изображение'
 
 
-@admin.register(Dish)
+@admin.register(Dishes)
 class DishAdmin(admin.ModelAdmin):
     list_display = ("name", "description")

@@ -10,16 +10,16 @@ from menu.models import Set
 from tables.models import Table
 
 from .forms import (
-  BookingForm,
-  ComboForm,
-  DishesForm,
-  LocationForm,
-  TableForm
+    BookingForm,
+    ComboForm,
+    DishesForm,
+    LocationForm,
+    TableForm
 )
 from .models import (
-  OrderSets,
-  Reservation,
-  TableReservation
+    OrderSets,
+    Reservation,
+    TableReservation
 )
 
 

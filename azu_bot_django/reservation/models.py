@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import MAX_CHAR_LENGHT, MAX_DIGIT_LENGHT
+from azu_bot_django.settings import MAX_CHAR_LENGTH, MAX_DIGIT_LENGTH
 from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
@@ -37,18 +37,15 @@ class Reservation(models.Model):
     )
     number = models.CharField(
         'Номер телефона клиента',
-        max_length=MAX_DIGIT_LENGHT
+        max_length=MAX_DIGIT_LENGTH
     )
     status = models.CharField(
-        max_length=MAX_CHAR_LENGHT,
+        'Статус брони',
+        max_length=MAX_CHAR_LENGTH,
         choices=STATUS_DICT,
-        verbose_name='Статус брони'
         default=None
     )
-    sets_and_quantities = models.ManyToManyField(
-        'OrderSets',
-        related_name='reservations'
-    )
+
     class Meta:
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
@@ -62,7 +59,7 @@ class OrderSets(models.Model):
     reservation = models.ForeignKey(
         'reservation.Reservation',
         on_delete=models.CASCADE,
-        verbose_name='Бронь'
+        verbose_name='Бронь',
         related_name='order_sets',
         default=None
     )
@@ -80,8 +77,8 @@ class OrderSets(models.Model):
         verbose_name_plural = 'Заказы'
         constraints = [
             UniqueConstraint(
-                fields=('reservation', 'set'),
-                name='unique_reservation_set'
+                fields=('reservation', 'sets'),
+                name='unique_reservation_sets'
             ),
         ]
 

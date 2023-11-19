@@ -7,12 +7,12 @@ from azu_bot_django.settings import MAX_CHAR_LENGTH
 class Cafe(models.Model):
     name = models.CharField(
         'Название кафе',
-        max_length=MAX_CHAR_LENGHT,
+        max_length=MAX_CHAR_LENGTH,
         unique=True
     )
     address = models.CharField(
         'Адрес кафе',
-        max_length=MAX_CHAR_LENGHT,
+        max_length=MAX_CHAR_LENGTH,
         unique=True
     )
     number = models.CharField(
