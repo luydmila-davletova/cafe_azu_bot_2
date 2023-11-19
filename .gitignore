@@ -1,4 +1,8 @@
 ### Python template
+
+# Custom
+migrations/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -131,6 +135,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/
 
 # pytype static type analyzer
 .pytype/
