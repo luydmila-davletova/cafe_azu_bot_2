@@ -93,8 +93,6 @@ def people_per_table_kbd():
     keyboard_builder.button(text='2')
     keyboard_builder.button(text='3')
     keyboard_builder.button(text='4')
-#    keyboard_builder.button(text='5')
-#    keyboard_builder.button(text='6')
     keyboard_builder.button(text='Назад '+emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
