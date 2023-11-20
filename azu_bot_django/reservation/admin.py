@@ -13,6 +13,7 @@ from tables.models import Table
 
 from .models import OrderSets, Reservation
 
+
 class OrderSetsInline(admin.TabularInline):
     model = OrderSets
     extra = 1
