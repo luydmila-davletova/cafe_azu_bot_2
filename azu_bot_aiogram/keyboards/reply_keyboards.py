@@ -93,7 +93,7 @@ def people_per_table_kbd():
     keyboard_builder.button(text='2')
     keyboard_builder.button(text='3')
     keyboard_builder.button(text='4')
-    keyboard_builder.button(text='Назад '+emojize(':calendar:'))
+    keyboard_builder.button(text='Назад ' + emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
@@ -107,7 +107,7 @@ def move_tables_or_change_cafe_kbd():
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Выбрать другое кафе')
     keyboard_builder.button(text='Сдвигать столы')
-    keyboard_builder.button(text='Назад '+emojize(':calendar:'))
+    keyboard_builder.button(text='Назад ' + emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
@@ -123,7 +123,7 @@ def choose_another_cafe_kbd():
     keyboard_builder.button(text='Петербургская, 52')
     keyboard_builder.button(text='Павлюхина, 91')
     keyboard_builder.button(text='Петербургская, 14')
-    keyboard_builder.button(text='Назад '+emojize(':reverse_button:'))
+    keyboard_builder.button(text='Назад ' + emojize(':reverse_button:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
@@ -136,7 +136,7 @@ def enter_name_kbd():
     """Отправить имя или вернуться назад."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='На моё имя')
-    keyboard_builder.button(text='Назад '+emojize(':family:'))
+    keyboard_builder.button(text='Назад ' + emojize(':family:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
@@ -151,7 +151,7 @@ def enter_phone_kbd():
     keyboard_builder.button(
         text='Отправить мой номер телефона', request_contact=True
     )
-    keyboard_builder.button(text='Назад '+emojize(':left_arrow:'))
+    keyboard_builder.button(text='Назад ' + emojize(':left_arrow:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
@@ -163,14 +163,14 @@ def enter_phone_kbd():
 def go_to_pay_or_choose_food_kbd():
     """Продолжить выбор еды или перейти к оплате."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Продолжить выбор')
+#    keyboard_builder.button(text='Продолжить выбор')
     keyboard_builder.button(text='Оплатить')
-    keyboard_builder.button(text='Назад '+emojize(':mobile_phone:'))
+    keyboard_builder.button(text='Назад ' + emojize(':mobile_phone:'))
     keyboard_builder.button(text='Отмена')
-    keyboard_builder.adjust(1, 1, 2)
+    keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        input_field_placeholder='Продолжить выбор или оплатить?'
+        input_field_placeholder='Перейти к оплате?'
     )
 
 
@@ -178,7 +178,7 @@ def check_order_kbd():
     """Проверить заказ и перейти к оплате."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Перейти к оплате')
-    keyboard_builder.button(text='Назад '+emojize(':pot_of_food:'))
+    keyboard_builder.button(text='Назад ' + emojize(':pot_of_food:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
@@ -204,12 +204,26 @@ def no_free_tables_kbd():
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Выбрать другое кафе')
     keyboard_builder.button(text='Сдвигать столы')
-    keyboard_builder.button(text='Назад '+emojize(':calendar:'))
+    keyboard_builder.button(text='Назад ' + emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
         input_field_placeholder='Как поступим?'
+    )
+
+
+def reminder_kbd():
+    """Клавиатура выбора периода напоминания о заказе."""
+    keyboard_builder = ReplyKeyboardBuilder()
+    keyboard_builder.button(text='За сутки')
+    keyboard_builder.button(text='За 3 часа')
+    keyboard_builder.button(text='Не отправлять напоминание')
+    keyboard_builder.adjust(2, 1)
+    return keyboard_builder.as_markup(
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        input_field_placeholder='За сколько до начала ифтара напомнить?'
     )
 
 

@@ -2,6 +2,7 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class StepsForm(StatesGroup):
+    """Состояния для машины состояний."""
     CHOOSE_CAFE = State()
     CAFE_INFO = State()
     MENU_WATCH = State()
@@ -17,3 +18,4 @@ class StepsForm(StatesGroup):
     ORDER_CHECK_PAY = State()
     PAY_STATE = State()
     FINAL_STATE = State()
+    REMINDER_STATE = State()

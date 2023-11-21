@@ -17,8 +17,10 @@ from utils.states import StepsForm
 
 async def get_start(message: Message, bot: Bot, state: FSMContext):
     """Приветствие и выбор адреса кафе."""
-    await message.answer('Привет! Я чат-бот сети кафе АЗУ! '
-                         'Пожалуйста выберите адрес:',
+    await message.answer('Ассэламуалейкум!\n'
+                         'Я чат-бот сети кафе АЗУ!\n'
+                         'Рады будем приготовить для Вас ифтар!\n'
+                         'Пожалуйста выберите адрес кафе:',
                          reply_markup=cafe_select_kbd())
     await state.set_state(StepsForm.CHOOSE_CAFE)
 
@@ -104,8 +106,11 @@ async def route_to_cafe(message: Message, bot: Bot, state: FSMContext):
 
 async def choose_date(message: Message, bot: Bot, state: FSMContext):
     """Начало бронирования стола. Ввод даты бронирования."""
-    await message.answer('Введите дату в формате ДД.ММ (например 02.08.2024)',
-                         reply_markup=reserve_or_back_kbd())
+    await message.answer(
+        'Введите дату, которую Вы хотите забронировать '
+        'в формате ДД.ММ.ГГГГ (например 02.08.2024)',
+        reply_markup=reserve_or_back_kbd()
+    )
     await state.set_state(StepsForm.CHOOSE_DATE)
 
 

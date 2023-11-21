@@ -1,11 +1,8 @@
-from datetime import datetime, timedelta
-
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from handlers.appsched import send_reminder
+from handlers.appsched import get_reminder_time
 from settings import settings
 from utils.states import StepsForm
 
@@ -69,25 +66,15 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery, bot: Bot):
 async def succesfull_payment(
         message: Message,
         bot: Bot,
-        state: FSMContext,
-        apscheduler: AsyncIOScheduler
+        state: FSMContext
 ):
     """Сообщение об успешной оплате заказа."""
     msg = (
         'Ваш заказ общей стоимостью: '
         f'{message.successful_payment.total_amount // 100} '
         f'{message.successful_payment.currency}. успешно оплачен!'
-        f'\r\nЗа 2 часа до начала ифтара мы пришлем Вам напоминание.'
-        f'\r\nСпасибо! Хорошего дня!'
+        f'\r\nСпасибо, что выбираете нас!'
     )
     await message.answer(msg)
     await state.set_state(StepsForm.FINAL_STATE)
-    print(datetime.now())
-    apscheduler.add_job(
-        send_reminder,
-        trigger='date',
-        run_date=datetime.now() + timedelta(seconds=10),
-        kwargs={
-            'bot': bot, 'chat_id': message.from_user.id, 'state': state
-        }
-    )
+    await get_reminder_time(message, bot, state)
