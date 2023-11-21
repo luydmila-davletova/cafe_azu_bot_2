@@ -23,7 +23,7 @@ class Cafe(models.Model):
     class Meta:
         verbose_name = 'Кафе'
         verbose_name_plural = 'Кафе'
-        ordering = ("name",)
+        ordering = ('name',)
         constraints = [
             UniqueConstraint(
                 fields=('name', 'address',),

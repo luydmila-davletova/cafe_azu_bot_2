@@ -2,11 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import UniqueConstraint
 
-from azu_bot_django.settings import (
-    MAX_CHAR_LENGTH,
-    MAX_DECIMAL_LENGTH,
-    MAX_DIGIT_LENGTH
-)
+from azu_bot_django.settings import (MAX_CHAR_LENGTH, MAX_DECIMAL_LENGTH,
+                                     MAX_DIGIT_LENGTH)
 
 
 class Dishes(models.Model):
@@ -64,7 +61,7 @@ class Set(models.Model):
     class Meta:
         verbose_name = 'Сет'
         verbose_name_plural = 'Сеты'
-        ordering = ("price", "name",)
+        ordering = ('price', 'name',)
 
     def __str__(self):
         return f'{self.name} по цене {self.price}'
@@ -96,7 +93,7 @@ class SetDish(models.Model):
             dish=self.dish
         ):
             raise ValidationError(
-                "Такой сет уже существует!"
+                'Такой сет уже существует!'
             )
 
     def __str__(self):

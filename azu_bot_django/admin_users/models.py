@@ -1,8 +1,7 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.db import models
 from django.core.exceptions import ValidationError
-
+from django.db import models
 
 from cafe.models import Cafe
 from reservation.models import OrderSets, Reservation
@@ -15,13 +14,13 @@ class CustomUser(AbstractUser):
         verbose_name='В кафе',
         blank=True,
         null=True,
-        help_text="Для сотрудников кафе обязателен выбор к привязанному кафе",
+        help_text='Для сотрудников кафе обязателен выбор к привязанному кафе',
     )
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        ordering = ("username",)
+        ordering = ('username',)
 
     def __str__(self):
         return self.username
@@ -30,7 +29,7 @@ class CustomUser(AbstractUser):
         """Если пользователь админ - может заходить в админку"""
         if not self.cafe:
             raise ValidationError(
-                "Выберите кафе к которому приписан администратор"
+                'Выберите кафе к которому приписан администратор'
             )
         self.is_staff = True
 

@@ -14,11 +14,11 @@ class SetDishInline(admin.TabularInline):
 @admin.register(Set)
 class SetAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "description",
-        "price",
-        "display_image"
+        'name', 'description',
+        'price',
+        'display_image'
     )
-    search_fields = ("name",)
+    search_fields = ('name',)
     inlines = [SetDishInline]
 
     def view_dishes(self, obj):
@@ -28,15 +28,15 @@ class SetAdmin(admin.ModelAdmin):
         else:
             short_description = 'блюд'
         url = (
-            reverse("admin:menu_dish_changelist")
-            + "?"
-            + urlencode({"set__id": f"{obj.id}"})
+            reverse('admin:menu_dish_changelist')
+            + '?'
+            + urlencode({'set__id': f'{obj.id}'})
         )
         return format_html(
             '<a href="{}">{} {}</a>', url, count, short_description
         )
 
-    view_dishes.short_description = "Блюд"
+    view_dishes.short_description = 'Блюд'
 
     def display_image(self, obj):
         if obj.image:
@@ -50,4 +50,4 @@ class SetAdmin(admin.ModelAdmin):
 
 @admin.register(Dishes)
 class DishAdmin(admin.ModelAdmin):
-    list_display = ("name", "description")
+    list_display = ('name', 'description')
