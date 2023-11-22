@@ -12,6 +12,8 @@ from filters.is_adress import IsAnotherCafe, IsTrueAdress
 from filters.is_contact import IsTrueContact
 from filters.is_correct_date import IsCorrectDate
 from filters.is_correct_person_amount import IsPersonAmount, TooManyPersons
+from handlers.appsched import (one_day_before_iftar, no_reminder,
+                               three_hours_before_iftar)
 from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             back_to_no_table, back_to_persons, back_to_phone,
                             back_to_set, back_to_start, cafe_menu,
@@ -55,36 +57,36 @@ async def start():
         F.text == 'Назад',
         or_f(
             StepsForm.CHOOSE_DATE, StepsForm.CAFE_ADDRESS, StepsForm.MENU_WATCH
-            )
+        )
     )
     dp.message.register(
         back_to_date,
-        F.text == 'Назад '+emojize(':calendar:'),
+        F.text == 'Назад ' + emojize(':calendar:'),
         or_f(StepsForm.PERSON_AMOUNT, StepsForm.NO_FREE_TABLE)
     )
     dp.message.register(
         back_to_persons,
-        F.text == 'Назад '+emojize(':family:'),
+        F.text == 'Назад ' + emojize(':family:'),
         StepsForm.NAME_STATE
     )
     dp.message.register(
         back_to_name,
-        F.text == 'Назад '+emojize(':left_arrow:'),
+        F.text == 'Назад ' + emojize(':left_arrow:'),
         StepsForm.PHONE_STATE
     )
     dp.message.register(
         back_to_no_table,
-        F.text == 'Назад '+emojize(':reverse_button:'),
+        F.text == 'Назад ' + emojize(':reverse_button:'),
         StepsForm.CHOOSE_ANOTHER_CAFE
     )
     dp.message.register(
         back_to_phone,
-        F.text == 'Назад '+emojize(':mobile_phone:'),
+        F.text == 'Назад ' + emojize(':mobile_phone:'),
         StepsForm.ORDER_STATE
     )
     dp.message.register(
         back_to_set,
-        F.text == 'Назад '+emojize(':pot_of_food:'),
+        F.text == 'Назад ' + emojize(':pot_of_food:'),
         StepsForm.ORDER_CHECK_PAY
     )
     dp.message.register(main_cafe_menu, IsTrueAdress(), StepsForm.CHOOSE_CAFE)
@@ -109,7 +111,7 @@ async def start():
         F.text == 'Забронировать стол',
         or_f(
             StepsForm.CAFE_INFO, StepsForm.CAFE_ADDRESS, StepsForm.MENU_WATCH
-            )
+        )
     )
     dp.message.register(
         name_for_reserving,
@@ -140,6 +142,21 @@ async def start():
         get_my_name,
         F.text == 'На моё имя',
         StepsForm.NAME_STATE
+    )
+    dp.message.register(
+        one_day_before_iftar,
+        F.text == 'За сутки',
+        StepsForm.REMINDER_STATE
+    )
+    dp.message.register(
+        three_hours_before_iftar,
+        F.text == 'За 3 часа',
+        StepsForm.REMINDER_STATE
+    )
+    dp.message.register(
+        no_reminder,
+        F.text == 'Не отправлять напоминание',
+        StepsForm.REMINDER_STATE
     )
     dp.message.register(
         get_phone,
