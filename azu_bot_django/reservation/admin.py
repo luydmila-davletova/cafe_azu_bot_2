@@ -1,14 +1,13 @@
 from django import forms
 from django.contrib import admin
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-from django.urls import path, reverse
+from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 
 from cafe.models import Cafe
 from reservation.models import OrderSets, Reservation
-from reservation.validation import tables_in_cafe, tables_in_cafe_in_date
+from reservation.validation import (tables_available, tables_in_cafe,
+                                    tables_in_cafe_in_date)
 from tables.models import Table
 
 from .models import OrderSets, Reservation
@@ -29,13 +28,14 @@ class ReservationForm(forms.ModelForm):
         data = self.cleaned_data
         tables_in_cafe(data)
         tables_in_cafe_in_date(data)
+        tables_available(data)
 
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ("cafe", "view_tables", "view_order_sets",
-                    "name", "number", "date")
-    list_filter = ("date", "cafe")
+    list_display = ('cafe', 'view_tables', 'view_order_sets',
+                    'name', 'number', 'date')
+    list_filter = ('date', 'cafe')
     inlines = [OrderSetsInline]
     form = ReservationForm
 
@@ -78,14 +78,13 @@ class ReservationAdmin(admin.ModelAdmin):
             if quantity:
                 quantity += ', '
             quantity += str(table.quantity)
-
         return str(count) + short_description + 'на ' + quantity + ' человек'
     view_tables.short_description = 'Столов'
 
     def view_order_sets(self, obj):
         """
-        Отображение количества заказов
-        и ссылка для перехода на них
+        Отображение количества заказанных сетов
+        и переход на панель с этими заказами
         """
         count = obj.sets.count()
         if count == 1:
@@ -94,65 +93,15 @@ class ReservationAdmin(admin.ModelAdmin):
             short_description = 'Заказа'
         else:
             short_description = 'Заказов'
-
-        url = reverse(
-            "admin:reservation_order_sets_changelist",
-            args=[obj.id]
+        url = (
+            reverse('admin:reservation_ordersets_changelist')
+            + '?'
+            + urlencode({'reservations__id': f'{obj.id}'})
         )
-        if count > 0:
-            url += f"?{urlencode({'reservation__id__exact': f'{obj.id}'})}"
-
         return format_html(
-            '<a href="{}">{} {}</a>',
-            url, count,
-            short_description
+            '<a href="{}">{} {}</a>', url, count, short_description
         )
-    view_order_sets.short_description = "Сетов"
-
-    def get_urls(self):
-        urls = super().get_urls()
-        custom_urls = [
-            path(
-                '<path:reservation_id>/order_sets/',
-                self.admin_site.admin_view(self.order_sets_changelist),
-                name='reservation_order_sets_changelist',
-            ),
-        ]
-        return custom_urls + urls
-
-    def order_sets_changelist(self, request, reservation_id):
-        reservation = get_object_or_404(Reservation, pk=reservation_id)
-
-        if request.method == 'POST':
-            set_id = request.POST.get('set_id')
-            quantity = request.POST.get('quantity')
-            OrderSets.objects.create(
-                reservation=reservation,
-                set_id=set_id,
-                quantity=quantity
-            )
-            url = reverse(
-                "admin:reservation_order_sets_changelist",
-                args=[reservation_id]
-            )
-            return HttpResponseRedirect(url)
-
-        context = {
-            'reservation': reservation,
-            'order_sets': reservation.order_sets.all(),
-        }
-        return render(
-            request,
-            'admin/reservation/ordersets/change_list.html',
-            context
-        )
-
-    def delete_reservation(self, request, reservation_id):
-        reservation = get_object_or_404(Reservation, pk=reservation_id)
-        reservation.delete()
-        return HttpResponseRedirect(
-            reverse("admin:reservation_reservation_changelist")
-        )
+    view_order_sets.short_description = 'Сетов'
 
 
 @admin.register(OrderSets)

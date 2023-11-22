@@ -4,10 +4,9 @@ from cafe.models import Cafe
 from tables.models import Table
 
 
-
 @admin.register(Table)
 class TableAdmin(admin.ModelAdmin):
-    list_display = ("cafe", "quantity")
+    list_display = ('name', 'cafe', 'quantity')
 
     def get_form(self, request, obj=None, **kwargs):
         """

@@ -6,7 +6,7 @@ from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
 
-STATUS_DICT = [
+STATUS_CHOICES = [
     ('booked', 'Забронировано'),
     ('cancelled', 'Отменено')
 ]
@@ -42,8 +42,8 @@ class Reservation(models.Model):
     status = models.CharField(
         'Статус брони',
         max_length=MAX_CHAR_LENGTH,
-        choices=STATUS_DICT,
-        default=None
+        choices=STATUS_CHOICES,
+        default='booked'
     )
 
     class Meta:
@@ -99,7 +99,6 @@ class TableReservation(models.Model):
         related_name='table_reservations',
         verbose_name='Бронь'
     )
-    quantity = models.IntegerField('Количество мест')
 
     class Meta:
         verbose_name = 'Бронь стола'

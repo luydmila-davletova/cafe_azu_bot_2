@@ -1,0 +1,617 @@
+openapi: 3.0.2
+info:
+  title: Документация к API проекта Azu Cafe
+  version: v1
+tags:
+  - name: Sets
+    description: Сеты
+  - name: Dishes
+    description: Блюда
+  - name: Cafes
+    description: Адреса и номера кафе
+  - name: Tables
+    description: Столы в кафе
+  - name: Reservations
+    description: Брони
+x-tagGroups:
+  - name: Auth
+    tags:
+      - Token
+  - name: Cafe
+    tags:
+      - Users
+      - Cafes
+      - Tables
+      - Reservations
+  - name: Menu
+    tags:
+      - Sets
+      - Dishes
+paths:
+  /menu/dishes/:
+    get:
+      tags:
+        - Dishes
+      operationId: Получение блюд
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+    post:
+      tags:
+        - Dishes
+      operationId: Создание блюда
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dish'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+    patch:
+      tags:
+        - Dishes
+      operationId: Обновление информации о блюде
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dish'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+    delete:
+      tags:
+        - Dishes
+      operationId: Удаление блюда
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+  /menu/sets/:
+    get:
+      tags:
+        - Sets
+      operationId: Получение сетов
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Set'
+    post:
+      tags:
+        - Sets
+      operationId: Создание сета
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Set'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Set'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+                    dishes:
+                      - Обязательное поле.
+                    price:
+                      - Обязательное поле.
+    patch:
+      tags:
+        - Sets
+      operationId: Обновление информации о сете
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Set'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Set'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+                    dishes:
+                      - Обязательное поле.
+                    price:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+    delete:
+      tags:
+        - Sets
+      operationId: Удаление сета
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Set'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    description:
+                      - Обязательное поле.
+                    dishes:
+                      - Обязательное поле.
+                    price:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+  /cafes/:
+    get:
+      tags:
+        - Cafes
+      operationId: Список кафе
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cafe'
+  /cafes/{cafe_id}/tables/:
+    get:
+      tags:
+        - Tables
+      operationId: Список столов в кафе
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+    post:
+      tags:
+        - Tables
+      operationId: Создание стола в кафе
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Table'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+    patch:
+      tags:
+        - Tables
+      operationId: Обновление информации о кафе
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Table'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+    delete:
+      tags:
+        - Tables
+      operationId: Удаление кафе
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Table'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+  /cafes/{cafe_id}/reservations/:
+    get:
+      tags:
+        - Reservations
+      operationId: Список броней в кафе
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+    post:
+      tags:
+        - Reservations
+      operationId: Создание брони в кафе
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    table:
+                      - Обязательное поле.
+                    sets:
+                      - Обязательное поле.
+                    date:
+                      - Обязательное поле.
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+    patch:
+      tags:
+        - Reservations
+      operationId: Обновление информации о брони
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reservation'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+    delete:
+      tags:
+        - Reservations
+      operationId: Удаление брони
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reservation'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+        404:
+          description: Объект не найден
+  /api-token-auth/:
+    post:
+      tags:
+        - Token
+      operationId: Создание токена пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    name:
+                      - Обязательное поле.
+                    quantity:
+                      - Обязательное поле.
+                    table_type:
+                      - Обязательное поле.
+
+components:
+  schemas:
+    Dish:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: id блюда
+          readOnly: true
+        name:
+          type: string
+          title: Название блюда
+        description:
+          type: string
+          title: Описание блюда
+        image:
+          type: string
+          format: binary
+          title: Фото блюда
+          nullable: true
+      required:
+        - name
+        - description
+    Set:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: id блюда
+          readOnly: true
+        name:
+          type: string
+          title: Название блюда
+        dishes:
+          title: Блюда в сете
+          type: array
+          items:
+            type: object
+            properties:
+              dish:
+                type: integer
+                title: id блюда
+              quantity:
+                type: integer
+                title: Количество блюд
+        price:
+          type: integer
+          title: Цена сета
+        image:
+          type: string
+          format: binary
+          title: Фото блюда
+          nullable: true
+      required:
+        - name
+        - dishes
+        - price
+    Cafe:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: id кафе
+          readOnly: true
+        name:
+          type: string
+          title: Название кафе
+        address:
+          type: string
+          title: Адрес кафе
+        number:
+          type: string
+          title: Номер кафе
+      required:
+        - name
+        - address
+        - number
+    Table:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: id стола
+          readOnly: true
+        name:
+          type: string
+          title: Имя стола
+        quantity:
+          type: string
+          title: Размер стола
+        table_type:
+          type: string
+          title: Тип стола
+      required:
+        - name
+        - quantity
+        - table_type
+    Reservation:
+      type: object
+      properties:
+        id:
+          type: integer
+          title: id брони
+          readOnly: true
+        quantity:
+          type: integer
+          title: Количество мест
+        sets:
+          title: Сеты в брони
+          type: array
+          items:
+            type: object
+            properties:
+              dish:
+                type: integer
+                title: id сета
+              quantity:
+                type: integer
+                title: Количество сетов
+        date:
+          type: data
+          title: Дата брони
+        name:
+          type: str
+          title: Имя клиента
+        number:
+          type: str
+          title: Номер клиента
+      required:
+        - quantity
+        - sets
+        - date
+        - name
+        - number
+    Token:
+      type: object
+      properties:
+        user:
+          type: string
+          title: Ник пользователя
+        password:
+          type: string
+          title: Пароль пользователя
+      required:
+        - user
+        - password
