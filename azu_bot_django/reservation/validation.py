@@ -1,6 +1,8 @@
-from django.core.exceptions import ValidationError
+from datetime import date, datetime, timedelta
+
 import requests
-from datetime import datetime
+from django.core.exceptions import ValidationError
+from rest_framework import serializers
 
 from reservation.models import Reservation
 
@@ -45,37 +47,43 @@ def tables_available(reservation_data):
         )
 
 
-# def cancell_reservation(data, rus=False):
-#     reservation_date = data['date'].value
-#     reservation_date = datetime.strptime(reservation_date, '%Y-%m-%d')
-#     today = datetime.now()
-#     if reservation_date == today:
-#         rus = True
-#     sunset_time = get_sunset_from_api()
-#     raise ValidationError(
-#         rus
-#     )
+"""Валидаторы для сериализаторов"""
 
 
-# def get_sunset_from_api():
-#     """Получаем время захода солнца"""
-#     try:
-#         response = requests.get(SUNSET_API)
-#     except requests.ConnectionError:
-#         raise ValidationError(
-#             {'status': 'error',
-#              'message': 'Ошибка при получении времени заката!'}
-#         )
-#     data = response.json()
-#     if data['status'] != 'OK':
-#         raise ValidationError(
-#             {'status': 'error',
-#              'message': 'Нет возможности проверить время заката!'}
-#         )
-#     sunset_today = data['results']['sunset']
-#     today = datetime.today()
-#     sunset_today = datetime.strptime(sunset_today, '%I:%M:%S %p')
-#     sunset_today = sunset_today.replace(
-#         year=today.year, month=today.month, day=today.day
-#     )
-#     return sunset_today
+def cancell_reservation(data, rus=False):
+    reservation_date = data['date'].value
+    reservation_date = date.fromisoformat(reservation_date)
+    today = date.today()
+    if data['status'].value == 'cancelled':
+        return
+    if reservation_date == today:
+        time_until_cancellation = get_sunset_from_api() - timedelta(hours=2)
+        if time_until_cancellation < datetime.now():
+            raise serializers.ValidationError(
+                {'status': 'error',
+                 'message': 'Отменить менее чем за два часа до брони нельзя!'}
+            )
+
+
+def get_sunset_from_api():
+    """Получаем время захода солнца"""
+    try:
+        response = requests.get(SUNSET_API)
+    except requests.ConnectionError:
+        raise serializers.ValidationError(
+            {'status': 'error',
+             'message': 'Ошибка при получении времени заката!'}
+        )
+    data = response.json()
+    if data['status'] != 'OK':
+        raise serializers.ValidationError(
+            {'status': 'error',
+             'message': 'Нет возможности проверить время заката!'}
+        )
+    sunset_today = data['results']['sunset']
+    today = datetime.today()
+    sunset_today = datetime.strptime(sunset_today, '%I:%M:%S %p')
+    sunset_today = sunset_today.replace(
+        year=today.year, month=today.month, day=today.day
+    )
+    return sunset_today
