@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
+# from reservation.validation import cancell_reservation
 
 from cafe.models import Cafe
 from reservation.models import Reservation
@@ -19,7 +20,8 @@ class ReservationViewSet(viewsets.ModelViewSet):
         return Reservation.objects.filter(cafe=self.get_cafe())
 
     def get_serializer_class(self):
-        if self.action in ('list', 'retrieve'):
+        method = self.request.method
+        if method in ('PATCH', 'GET'):
             return ReservationReadSerializer
         return ReservationWriteSerializer
 
@@ -33,3 +35,6 @@ class ReservationViewSet(viewsets.ModelViewSet):
         instance = self.perform_create(serializer)
         instance_serializer = ReservationReadSerializer(instance)
         return Response(instance_serializer.data)
+
+    # def perform_update(self, serializer):
+    #     cancell_reservation(serializer)

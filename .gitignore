@@ -1,7 +1,7 @@
 ### Python template
 
 # Custom
-migrations/
+# migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
