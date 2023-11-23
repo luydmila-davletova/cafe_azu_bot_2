@@ -9,7 +9,8 @@ from reservation.models import Reservation
 SUNSET_API = 'https://api.sunrisesunset.io/json?lat=55.78874&lng=49.12214'
 
 
-def tables_in_cafe(reservation_data):
+def tables_in_cafe(form_model):
+    reservation_data = form_model.cleaned_data
     tables_pk = reservation_data['table']
     for table in tables_pk:
         if reservation_data['cafe'].id != table.cafe.id:
@@ -18,7 +19,9 @@ def tables_in_cafe(reservation_data):
             )
 
 
-def tables_in_cafe_in_date(reservation_data):
+def tables_in_cafe_in_date(form_model):
+    reservation_data = form_model.cleaned_data
+    reservation_id = form_model.instance.id
     tables_pk = reservation_data['table']
     for table in tables_pk:
         if Reservation.objects.filter(
@@ -26,13 +29,15 @@ def tables_in_cafe_in_date(reservation_data):
             table=table,
             date=reservation_data['date'],
             status=1,
-        ):
+        ).exclude(id=reservation_id):
             raise ValidationError(
                 'Активная бронь с этим столом на эту дату существует'
             )
 
 
-def tables_available(reservation_data):
+def tables_available(form_model):
+    reservation_data = form_model.cleaned_data
+    reservation_id = form_model.instance.id
     tables = reservation_data['table']
     date = reservation_data['date']
     cafe = reservation_data['cafe']
@@ -40,7 +45,7 @@ def tables_available(reservation_data):
         reservation__cafe__id=cafe.id,
         reservation__date=date,
         reservation__status='booked'
-    ).values('table')
+    ).exclude(reservation=reservation_id).values('table')
     if tables.filter(id__in=unailable_tables):
         raise ValidationError(
             'Выбранные столы уже заняты на это число!'
