@@ -25,17 +25,19 @@ class ReservationForm(forms.ModelForm):
         Проверка полей
         """
         super().clean()
-        data = self.cleaned_data
-        tables_in_cafe(data)
-        tables_in_cafe_in_date(data)
-        tables_available(data)
+        if self.is_valid():
+            tables_in_cafe(self)
+            tables_in_cafe_in_date(self)
+            tables_available(self)
+        return self.cleaned_data
 
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
+    readonly_fields = ('id',)
     list_display = ('cafe', 'view_tables', 'view_order_sets',
                     'name', 'number', 'date')
-    list_filter = ('date', 'cafe')
+    list_filter = ('date', 'status')
     inlines = [OrderSetsInline]
     form = ReservationForm
 

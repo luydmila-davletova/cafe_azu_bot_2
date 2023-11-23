@@ -1,7 +1,7 @@
 ### Python template
 
 # Custom
-migrations/
+# migrations/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -63,7 +63,7 @@ cover/
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
+# db.sqlite3
 db.sqlite3-journal
 
 # Flask stuff:
