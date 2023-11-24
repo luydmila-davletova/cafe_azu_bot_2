@@ -41,6 +41,7 @@ sqlparse==0.4.4
 typing_extensions==4.7.1
 tzdata==2023.3
 tzlocal==5.2
+requests==2.31.0 
 unify==0.5
 untokenize==0.1.1
 yarl==1.9.2
