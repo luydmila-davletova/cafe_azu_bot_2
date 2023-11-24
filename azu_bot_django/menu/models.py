@@ -74,7 +74,8 @@ class SetDish(models.Model):
     set = models.ForeignKey(Set, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dishes, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(
-        verbose_name='Количество блюд в сете'
+        verbose_name='Количество блюд в сете',
+        default=1
     )
 
     class Meta:
@@ -82,15 +83,16 @@ class SetDish(models.Model):
         verbose_name_plural = 'Блюд в сете'
         constraints = [
             UniqueConstraint(
-                fields=('set', 'dish'),
-                name='unique_set_dish'
+                fields=('set', 'dish', 'quantity'),
+                name='unique_set_dish_quantity'
             ),
         ]
 
     def clean(self):
         if SetDish.objects.filter(
             set=self.set,
-            dish=self.dish
+            dish=self.dish,
+            quantity=self.quantity
         ):
             raise ValidationError(
                 'Такой сет уже существует!'

@@ -15,8 +15,7 @@ class SetDishInline(admin.TabularInline):
 class SetAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'description',
-        'price',
-        'display_image'
+        'price'
     )
     search_fields = ('name',)
     inlines = [SetDishInline]
@@ -38,14 +37,6 @@ class SetAdmin(admin.ModelAdmin):
 
     view_dishes.short_description = 'Блюд'
 
-    def display_image(self, obj):
-        if obj.image:
-            return format_html(
-                '<img src="{}" height="50" />'.format(obj.image.url)
-            )
-        return None
-
-    display_image.short_description = 'Изображение'
 
 
 @admin.register(Dishes)
