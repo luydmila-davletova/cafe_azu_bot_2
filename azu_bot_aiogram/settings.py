@@ -1,7 +1,10 @@
 from dataclasses import dataclass
+import os
 
 from environs import Env
+from dotenv import load_dotenv
 
+load_dotenv()
 
 @dataclass
 class Bots:
@@ -23,9 +26,9 @@ def get_settings(path: str):
         bots=Bots(
             bot_token=env.str('TOKEN'),
             admin_id=env.int('ADMIN_ID'),
-            provider_token=env.str('PROVIDER_TOKEN')
+            provider_token=env.str('PROVIDER_TOKEN'),
         )
     )
 
-
+django_token = os.getenv('DJANGO_TOKEN')
 settings = get_settings('.env')

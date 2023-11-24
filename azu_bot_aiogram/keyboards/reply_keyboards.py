@@ -1,4 +1,3 @@
-# from datetime import datetime, timedelta, timezone
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from emoji import emojize
 
@@ -23,13 +22,11 @@ def back_kbd():
     )
 
 
-def cafe_select_kbd():
+def cafe_select_kbd(cafes):
     """Клавиатура выбора кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='ул. Чистопольская, 2')
-    keyboard_builder.button(text='ул. Петербургская, 52')
-    keyboard_builder.button(text='ул. Павлюхина, 91')
-    keyboard_builder.button(text='ул. Петербургская, 14')
+    for cafe in cafes:
+        keyboard_builder.button(text=cafe['address'])
     keyboard_builder.adjust(2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
@@ -66,17 +63,7 @@ def table_or_back_kbd():
 
 def reserve_or_back_kbd():
     """Выбрать дату бронирования стола или вернуться назад."""
-#    offset = timezone(timedelta(hours=3))
-#    day_after_tommorow = datetime.now(offset) + timedelta(days=2)
-#    day_after_tommorow = day_after_tommorow.strftime('%d.%m.')
-#    after_day_after_tommorow = datetime.now(offset) + timedelta(days=3)
-#    after_day_after_tommorow = after_day_after_tommorow.strftime('%d.%m.')
-
     keyboard_builder = ReplyKeyboardBuilder()
-#    keyboard_builder.button(text='Сегодня')
-#    keyboard_builder.button(text='Завтра')
-#    keyboard_builder.button(text=f'{day_after_tommorow}')
-#    keyboard_builder.button(text=f'{after_day_after_tommorow}')
     keyboard_builder.button(text='Назад')
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
@@ -116,13 +103,12 @@ def move_tables_or_change_cafe_kbd():
     )
 
 
-def choose_another_cafe_kbd():
+def choose_another_cafe_kbd(cafes):
     """Выбрать другое кафе, если в текущем нет столов."""
     keyboard_builder = ReplyKeyboardBuilder()
-    keyboard_builder.button(text='Чистопольская, 2')
-    keyboard_builder.button(text='Петербургская, 52')
-    keyboard_builder.button(text='Павлюхина, 91')
-    keyboard_builder.button(text='Петербургская, 14')
+    for cafe in cafes:
+        keyboard_builder.button(text=cafe['address'])
+    keyboard_builder.adjust(2)
     keyboard_builder.button(text='Назад ' + emojize(':reverse_button:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
@@ -156,6 +142,7 @@ def enter_phone_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
+        one_time_keyboard=True,
         input_field_placeholder='Введите номер телефона.'
     )
 
@@ -163,13 +150,13 @@ def enter_phone_kbd():
 def go_to_pay_or_choose_food_kbd():
     """Продолжить выбор еды или перейти к оплате."""
     keyboard_builder = ReplyKeyboardBuilder()
-#    keyboard_builder.button(text='Продолжить выбор')
     keyboard_builder.button(text='Оплатить')
     keyboard_builder.button(text='Назад ' + emojize(':mobile_phone:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
+        one_time_keyboard=True,
         input_field_placeholder='Перейти к оплате?'
     )
 
@@ -225,62 +212,3 @@ def reminder_kbd():
         one_time_keyboard=True,
         input_field_placeholder='За сколько до начала ифтара напомнить?'
     )
-
-
-#  !!!Оставил на всякий случай (сделано по старой версии юзер флоу)!!!
-# def go_next_or_menu_kbd():
-#    """Знает ли пользователь, что будет заказывать или перейдёт в меню."""
-#    keyboard_builder = ReplyKeyboardBuilder()
-#    keyboard_builder.button(text='Да')
-#    keyboard_builder.button(text='Посмотреть меню')
-#    keyboard_builder.button(text='Назад')
-#    keyboard_builder.button(text='Отмена')
-#    keyboard_builder.adjust(1, 1, 2)
-#    return keyboard_builder.as_markup(
-#        resize_keyboard=True,
-#        one_time_keyboard=True,
-#        input_field_placeholder='Вы знаете, что хотите заказать?'
-#    )
-
-
-#  !!!Оставил на всякий случай (сделано по старой версии юзер флоу)!!!
-# def choose_food_kbd():
-#    """Показать сеты или вернуться назад."""
-#    keyboard_builder = ReplyKeyboardBuilder()
-#    keyboard_builder.button(text='Сет № 1')
-#    keyboard_builder.button(text='Сет № 2')
-#    keyboard_builder.button(text='Сет № 3')
-#    keyboard_builder.button(text='Сет № 4')
-#    keyboard_builder.button(text='Сет № 5')
-#    keyboard_builder.button(text='Сет № 6')
-#    keyboard_builder.button(text='Сет № 7')
-#    keyboard_builder.button(text='Сет № 8')
-#    keyboard_builder.button(text='Сет № 9')
-#    keyboard_builder.button(text='Назад')
-#    keyboard_builder.button(text='Отмена')
-#    keyboard_builder.adjust(3, 3, 3, 2)
-#    return keyboard_builder.as_markup(
-#        resize_keyboard=True,
-#        one_time_keyboard=True,
-#        input_field_placeholder='Выберите сет для ифтара.'
-#    )
-
-
-#  !!!Оставил на всякий случай (сделано по старой версии юзер флоу)!!!
-# def choose_amount_of_food_kbd():
-#    """Выбрать количество порций."""
-#    keyboard_builder = ReplyKeyboardBuilder()
-#    keyboard_builder.button(text='1')
-#    keyboard_builder.button(text='2')
-#    keyboard_builder.button(text='3')
-#    keyboard_builder.button(text='4')
-#    keyboard_builder.button(text='5')
-#    keyboard_builder.button(text='6')
-#    keyboard_builder.button(text='Назад')
-#    keyboard_builder.button(text='Отмена')
-#    keyboard_builder.adjust(3, 3, 2)
-#    return keyboard_builder.as_markup(
-#        resize_keyboard=True,
-#        one_time_keyboard=True,
-#        input_field_placeholder='Укажите количество сетов.'
-#    )

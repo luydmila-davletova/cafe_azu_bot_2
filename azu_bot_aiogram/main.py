@@ -11,6 +11,7 @@ from filters.back_to_start import GoToStart
 from filters.is_adress import IsAnotherCafe, IsTrueAdress
 from filters.is_contact import IsTrueContact
 from filters.is_correct_date import IsCorrectDate
+from filters.is_correct_order import IsCorrectOrder
 from filters.is_correct_person_amount import IsPersonAmount, TooManyPersons
 from handlers.appsched import (one_day_before_iftar, no_reminder,
                                three_hours_before_iftar)
@@ -19,11 +20,13 @@ from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             back_to_set, back_to_start, cafe_menu,
                             check_order_go_to_pay, choose_another_cafe,
                             choose_date, choose_pay_method, choose_set,
+                            confirm_order,
                             get_contacts, get_fake_contact, get_my_name,
                             get_phone, get_start, get_true_contact,
                             main_cafe_menu, name_for_reserving,
                             no_free_table, person_per_table, route_to_cafe)
 from handlers.pay import order, pre_checkout_query, succesfull_payment
+from handlers.menu import back_to_catalog
 from middlewares.appshed_middelware import SchedulerMiddleware
 from settings import settings
 from utils.states import StepsForm
@@ -38,20 +41,39 @@ async def start():
     bot = Bot(token=settings.bots.bot_token)
 
     dp = Dispatcher(storage=MemoryStorage())
-    scheduler = AsyncIOScheduler(timezone='Asia/Yekaterinburg')
+    scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
     scheduler.start()
     dp.update.middleware.register(SchedulerMiddleware(scheduler))
 
     dp.message.register(
-        order, F.text == 'Оплатить через ЮКасса', StepsForm.PAY_STATE
+        order,
+        F.text == 'Оплатить через ЮКасса',
+        StepsForm.PAY_STATE
     )
-    dp.pre_checkout_query.register(pre_checkout_query)
+    dp.pre_checkout_query.register(
+        pre_checkout_query,
+        StepsForm.PAY_STATE
+    )
     dp.message.register(
-        succesfull_payment, F.successful_payment, StepsForm.PAY_STATE,
+        succesfull_payment,
+        F.successful_payment,
+        StepsForm.PAY_STATE
     )
-    dp.message.register(get_start, Command(commands=['start', 'run']))
-    dp.message.register(get_true_contact, F.contact, IsTrueContact())
-    dp.message.register(get_fake_contact, F.contact)
+    dp.callback_query.register(back_to_catalog)
+    dp.message.register(
+        get_start,
+        Command(commands=['start', 'run'])
+    )
+    dp.message.register(
+        get_true_contact,
+        F.contact,
+        IsTrueContact(),
+        StepsForm.PHONE_STATE
+    )
+    dp.message.register(
+        get_fake_contact,
+        F.contact
+    )
     dp.message.register(
         back_to_cafe_menu,
         F.text == 'Назад',
@@ -89,8 +111,15 @@ async def start():
         F.text == 'Назад ' + emojize(':pot_of_food:'),
         StepsForm.ORDER_CHECK_PAY
     )
-    dp.message.register(main_cafe_menu, IsTrueAdress(), StepsForm.CHOOSE_CAFE)
-    dp.message.register(back_to_start, GoToStart())
+    dp.message.register(
+        main_cafe_menu,
+        IsTrueAdress(),
+        StepsForm.CHOOSE_CAFE
+    )
+    dp.message.register(
+        back_to_start,
+        GoToStart()
+    )
     dp.message.register(
         get_contacts,
         F.text == 'Контакты и режим работы',
@@ -177,6 +206,11 @@ async def start():
         choose_pay_method,
         F.text == 'Перейти к оплате',
         StepsForm.ORDER_CHECK_PAY
+    )
+    dp.message.register(
+        confirm_order,
+        IsCorrectOrder(),
+        StepsForm.ORDER_STATE
     )
     dp.message.register(
         person_per_table,
