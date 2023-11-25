@@ -18,7 +18,7 @@ class AiogramConsumer(AsyncWebsocketConsumer):
         message = text_data_json['message']
         await self.send(
             text_data=json.dumps(
-                {'response': 'Message received successfully.'}))
+                {'response': 'Сообщение успешно получено.'}))
         await self.bot.send_message(
             chat_id=settings.bots.admin_id, text=message)
 
