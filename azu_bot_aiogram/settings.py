@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 @dataclass
 class Bots:
     bot_token: str
@@ -29,6 +30,7 @@ def get_settings(path: str):
             provider_token=env.str('PROVIDER_TOKEN'),
         )
     )
+
 
 django_token = os.getenv('DJANGO_TOKEN')
 settings = get_settings('.env')

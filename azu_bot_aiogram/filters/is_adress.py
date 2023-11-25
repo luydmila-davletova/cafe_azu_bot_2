@@ -3,13 +3,6 @@ from aiogram.types import Message
 from handlers.api import get_cafe
 
 
-ALTERNATIVE_ADRESSES = {
-    'ул. Чистопольская, 2',
-    'ул. Петербургская, 52',
-    'ул. Павлюхина, 91',
-    'ул. Петербургская, 14'
-}
-
 class IsTrueAdress(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         """Проверка корректности указанного адреса."""

@@ -24,7 +24,8 @@ from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             get_contacts, get_fake_contact, get_my_name,
                             get_phone, get_start, get_true_contact,
                             main_cafe_menu, name_for_reserving,
-                            no_free_table, person_per_table, route_to_cafe)
+                            no_free_table, person_per_table, route_to_cafe,
+                            pay_again_other_cafe)
 from handlers.pay import order, pre_checkout_query, succesfull_payment
 from handlers.menu import back_to_catalog
 from middlewares.appshed_middelware import SchedulerMiddleware
@@ -52,6 +53,11 @@ async def start():
     )
     dp.pre_checkout_query.register(
         pre_checkout_query,
+        StepsForm.PAY_STATE
+    )
+    dp.message.register(
+        pay_again_other_cafe,
+        IsTrueAdress(),
         StepsForm.PAY_STATE
     )
     dp.message.register(
