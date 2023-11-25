@@ -42,7 +42,7 @@ async def send_reminder_3_hours(bot: Bot, chat_id: int, state: FSMContext):
     person_amount = context_data.get('person_amount')
     text = (
         f'Ассэламуалейкум, {name}!\n'
-        f'Напоминаем Вам, что {date} вы забронировали '
+        f'Напоминаем Вам, что {date} вы заказали '
         f'{person_amount} ифтар-сета в кафе A Z U.\n'
         'До начала ифтара осталось 3 часа.\n'
         f'Мы ждем Вас по адресу: г. Казань, {address}.')
@@ -73,7 +73,7 @@ async def send_reminder_1_day(bot: Bot, chat_id: int, state: FSMContext):
     person_amount = context_data.get('person_amount')
     text = (
         f'Ассэламуалейкум, {name}!\n'
-        f'Напоминаем Вам, что {date} вы забронировали '
+        f'Напоминаем Вам, что {date} вы заказали '
         f'{person_amount} ифтар-сета в кафе A Z U.\n'
         'До начала ифтара осталось 24 часа.\n'
         f'Мы ждем Вас по адресу: г. Казань, {address}.')
