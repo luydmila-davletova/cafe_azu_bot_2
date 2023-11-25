@@ -1,9 +1,9 @@
+from asgiref.sync import sync_to_async
 from rest_framework import serializers
 
 from menu.models import Dishes, Set, SetDish
 
 # from rest_framework.validators import UniqueTogetherValidator
-
 
 
 class DishesSerializer(serializers.ModelSerializer):
@@ -36,6 +36,7 @@ class SetWriteSerializer(serializers.ModelSerializer):
         fields = '__all__'
         model = Set
 
+    @sync_to_async
     def create(self, validated_data):
         set_dishes = validated_data.pop('dishes')
         set = Set.objects.create(**validated_data)

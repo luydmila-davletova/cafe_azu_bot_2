@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from django.contrib import admin
 
 from cafe.models import Cafe
@@ -8,6 +9,7 @@ from tables.models import Table
 class TableAdmin(admin.ModelAdmin):
     list_display = ('name', 'cafe', 'quantity')
 
+    @sync_to_async
     def get_form(self, request, obj=None, **kwargs):
         """
         При создании нового объекта другие экземпляры моделей
@@ -20,6 +22,7 @@ class TableAdmin(admin.ModelAdmin):
             cafe=request.user.cafe.id)
         return form
 
+    @sync_to_async
     def get_queryset(self, request):
         """
         Персонал получит информацию о столах в его кафе,
