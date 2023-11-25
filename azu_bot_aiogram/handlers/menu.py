@@ -2,8 +2,8 @@ from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from handlers.callback_setup import SetGroup, SetInfo
-from keyboards.inline_keyboards import cart, catalog, catalog_set400, catalog_set500, catalog_set700
+from handlers.callback_setup import SetGroup
+from keyboards.inline_keyboards import (catalog)
 
 
 sets = [
@@ -20,6 +20,7 @@ sets = [
 
 order = {}
 
+
 def addItem(order, item, price):
     if order is False:
         data = '{"%s":{"count":1}, "all_price":%d}' % (item, price)
@@ -28,10 +29,10 @@ def addItem(order, item, price):
 
     order["all_price"] += price
     if item in order.keys():
-        order[item]["count"] += 1        
+        order[item]["count"] += 1
         return order
 
-    order.update({item:{"count":1}})
+    order.update({item: {"count": 1}})
     return order
 
 
@@ -44,38 +45,50 @@ def delItem(order, item, price):
         if order[item]["count"] > 1:
             order[item]["count"] -= 1
             return order
-        del order[item]        
+        del order[item]
         return order
 
     return False
 
 
 def user_cart(order):
-	text = "Ваша корзина пуста"
-	if order is not False:
-		text = "В Вашей корзине на данный момент:\n\n"
-		text += "<b>Итоговая сумма: {price}</b>\n\n".format(price=order["all_price"])
-		del order["all_price"]
-		for item in order:
-			text += "{item} {count}шт\n".format(item=item, count=order[item]["count"])
-	return text
+    text = "Ваша корзина пуста"
+    if order is not False:
+        text = "В Вашей корзине на данный момент:\n\n"
+        text += "<b>Итоговая сумма: {price}</b>\n\n".format(
+            price=order["all_price"])
+        del order["all_price"]
+        for item in order:
+            text += "{item} {count}шт\n".format(item=item,
+                                                count=order[item]["count"])
+    return text
 
 
 def user_confirm_order(order):
-	if order is False:
-		return False
-	text = "Ваш заказ:\n\n"
-	text += "<b>Итоговая сумма: {price}</b>\n\n".format(price=order["all_price"])
-	del order["all_price"]
-	for item in order:
-		text += "{item} {count}шт\n".format(item=item, count=order[item]["count"])
-	return text
+    if order is False:
+        return False
+    text = "Ваш заказ:\n\n"
+    text += "<b>Итоговая сумма: {price}</b>\n\n".format(
+        price=order["all_price"])
+    del order["all_price"]
+    for item in order:
+        text += "{item} {count}шт\n".format(item=item,
+                                            count=order[item]["count"])
+    return text
 
 
 async def view_catalog(message: Message, bot: Bot, state: FSMContext):
-    await message.answer('Выберите ценовую категорию сета', reply_markup = catalog)
+    await message.answer(
+        'Выберите ценовую категорию сета',
+        reply_markup=catalog
+    )
 
 
-async def back_to_catalog(call: CallbackQuery, bot: Bot, callback_data: SetGroup):
-    await bot.send_message('Выберите ценовую категорию сета', reply_markup = catalog())
+async def back_to_catalog(
+    call: CallbackQuery, bot: Bot, callback_data: SetGroup
+):
+    await bot.send_message(
+        'Выберите ценовую категорию сета',
+        reply_markup=catalog()
+    )
     await call.answer()

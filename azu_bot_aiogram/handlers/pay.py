@@ -2,6 +2,7 @@ from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
 
+from handlers.basic import cafe_select_kbd
 from handlers.api import get_cafe, post_reservation
 from handlers.appsched import get_reminder_time
 from settings import settings
@@ -62,7 +63,9 @@ async def order(message: Message, bot: Bot, state: FSMContext):
 
 
 async def pre_checkout_query(
-        pre_checkout_query: PreCheckoutQuery, bot: Bot, state: FSMContext
+    pre_checkout_query: PreCheckoutQuery,
+    bot: Bot,
+    state: FSMContext
 ):
     """Обработка заказа. Поскольку у нас нет доставки, тут авто согласие."""
     cafes = await get_cafe()
@@ -73,13 +76,29 @@ async def pre_checkout_query(
             break
     data_dict = {}
     data_dict['quantity'] = context_data.get('person_amount')
-    data_dict['sets'] = [{'sets': 1, 'quantity': 2}]
+    data_dict['sets'] = []
+    for set, value in context_data.get('data_sets').items():
+        data_dict['sets'].append({'sets': set, 'quantity': value})
     data_dict['date'] = '-'.join(context_data.get('date').split('.')[::-1])
     data_dict['name'] = context_data.get('name')
     data_dict['number'] = context_data.get('phone')
     answer = await post_reservation(cafe['id'], data_dict)
-    """При неудачной оплате answer['error'] вернет no_places, не уверен куда вести дальше"""
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+    if 'id' in answer.keys():
+        await bot.answer_pre_checkout_query(
+            pre_checkout_query.id,
+            ok=True
+        )
+    else:
+        await bot.answer_pre_checkout_query(
+            pre_checkout_query.id,
+            ok=False,
+            error_message=answer['message']
+        )
+        await bot.send_message(
+            chat_id=pre_checkout_query.from_user.id,
+            text='В этом кафе закончились столы, выберите другое кафе',
+            reply_markup=cafe_select_kbd(cafes)
+        )
 
 
 async def succesfull_payment(
