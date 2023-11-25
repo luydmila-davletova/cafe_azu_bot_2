@@ -1,7 +1,7 @@
 from csv import DictReader
 
 from django.core.management import BaseCommand
-from menu.models import Dishes, Set, SetDish
+from menu.models import Dishes, Set
 
 
 class Command(BaseCommand):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         id_setdish = 1
         for cafe_sets in DictReader(
             open('static/data/sets.csv', encoding="utf8")
-        ):  
+        ):
             cafe_set = Set(
                 id=cafe_sets['id'],
                 name=cafe_sets['name'],

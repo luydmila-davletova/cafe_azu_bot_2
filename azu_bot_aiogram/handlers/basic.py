@@ -213,7 +213,6 @@ async def confirm_order(
     context_data = await state.get_data()
     data_sets_order = context_data.get('data_sets')
     total_price = context_data.get('total_price')
-    print(f'Data sets == {data_sets_order}')
     text = 'Вы выбрали:\n'
     for number, amount in data_sets_order.items():
         text += f'Сет №{number} в количестве {amount} шт.\n'
@@ -290,6 +289,7 @@ async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
 
 
 async def bot_error(message: Message, bot: Bot, state: FSMContext):
+    """В случае если появляется ошибки - выдача пользователю сообщения"""
     await message.answer(
         'Технические неполадки, просим обратится по телефону или лично'
     )
