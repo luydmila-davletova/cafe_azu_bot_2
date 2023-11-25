@@ -1,12 +1,11 @@
 from datetime import date, datetime, timedelta
 
 import requests
+from asgiref.sync import sync_to_async
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from reservation.models import Reservation
-from asgiref.sync import sync_to_async
-
 
 SUNSET_API = 'https://api.sunrisesunset.io/json?lat=55.78874&lng=49.12214'
 

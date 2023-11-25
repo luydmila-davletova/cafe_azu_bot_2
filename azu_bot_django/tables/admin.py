@@ -1,8 +1,8 @@
+from asgiref.sync import sync_to_async
 from django.contrib import admin
 
 from cafe.models import Cafe
 from tables.models import Table
-from asgiref.sync import sync_to_async
 
 
 @admin.register(Table)

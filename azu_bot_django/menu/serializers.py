@@ -1,7 +1,7 @@
+from asgiref.sync import sync_to_async
 from rest_framework import serializers
 
 from menu.models import Dishes, Set, SetDish
-from asgiref.sync import sync_to_async
 
 # from rest_framework.validators import UniqueTogetherValidator
 

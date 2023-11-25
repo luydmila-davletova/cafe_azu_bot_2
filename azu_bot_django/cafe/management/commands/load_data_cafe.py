@@ -1,6 +1,7 @@
 from csv import DictReader
 
 from django.core.management import BaseCommand
+
 from cafe.models import Cafe
 
 

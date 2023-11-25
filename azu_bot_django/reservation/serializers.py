@@ -1,10 +1,10 @@
+from asgiref.sync import sync_to_async
 from rest_framework import serializers
 
 from menu.serializers import SetReadSerializer
 from reservation.models import OrderSets, Reservation
 from tables.models import Table
 from tables.serializers import TableSerializer
-from asgiref.sync import sync_to_async
 
 
 class OrderSetsSerializer(serializers.ModelSerializer):

@@ -1,6 +1,8 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 from aiogram import Bot, Dispatcher
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 from azu_bot_django import settings
 
 

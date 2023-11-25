@@ -1,10 +1,10 @@
+from asgiref.sync import sync_to_async
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from menu.models import Dishes, Set
 from menu.serializers import (DishesSerializer, SetReadSerializer,
                               SetWriteSerializer)
-from asgiref.sync import sync_to_async
 
 
 class DishesViewSet(viewsets.ModelViewSet):
