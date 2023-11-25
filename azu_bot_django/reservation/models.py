@@ -1,8 +1,15 @@
 from django.db import models
+from django.db.models import UniqueConstraint
+
+from azu_bot_django.settings import MAX_CHAR_LENGTH, MAX_DIGIT_LENGTH
 from cafe.models import Cafe
 from menu.models import Set
 from tables.models import Table
-from azu_bot_django.settings import MAX_CHAR_LENGHT
+
+STATUS_CHOICES = [
+    ('booked', 'Забронировано'),
+    ('cancelled', 'Отменено')
+]
 
 
 class Reservation(models.Model):
@@ -10,7 +17,7 @@ class Reservation(models.Model):
         Cafe,
         on_delete=models.CASCADE,
         related_name='reservations',
-        verbose_name='Кафе'
+        verbose_name='Кафе',
     )
     table = models.ManyToManyField(
         Table,
@@ -25,20 +32,19 @@ class Reservation(models.Model):
         verbose_name='Дата бронирования'
     )
     name = models.CharField(
-        max_length=100,
-        verbose_name='Имя клиента'
+        'Имя клиента',
+        max_length=MAX_CHAR_LENGTH
     )
     number = models.CharField(
-        max_length=15,
-        verbose_name='Номер телефона клиента'
+        'Номер телефона клиента',
+        max_length=MAX_DIGIT_LENGTH
     )
-    status = models.CharField(max_length=20,
-                              choices=[
-                                ('booked', 'Забронировано'),
-                                ('cancelled', 'Отменено')])
-    sets_and_quantities = models.ManyToManyField(
-        'OrderSets',
-        related_name='sets_and_qtys_booking')
+    status = models.CharField(
+        'Статус брони',
+        max_length=MAX_CHAR_LENGTH,
+        choices=STATUS_CHOICES,
+        default='booked'
+    )
 
     class Meta:
         verbose_name = 'Бронь'
@@ -51,23 +57,49 @@ class Reservation(models.Model):
 
 class OrderSets(models.Model):
     reservation = models.ForeignKey(
-        Reservation,
+        'reservation.Reservation',
         on_delete=models.CASCADE,
+        verbose_name='Бронь',
         related_name='order_sets',
-        verbose_name='Бронь'
+        default=None
     )
-    set = models.ForeignKey(
+    sets = models.ForeignKey(
         Set,
         on_delete=models.CASCADE,
-        verbose_name='Сет'
+        related_name='order_sets'
     )
     quantity = models.PositiveIntegerField(
-        verbose_name='Количество сета'
+        'Количество сета'
     )
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        constraints = [
+            UniqueConstraint(
+                fields=('reservation', 'sets'),
+                name='unique_reservation_sets'
+            ),
+        ]
 
     def __str__(self):
-        return f'Заказ {self.set} в количестве {self.quantity}'
+        return f'Заказ {self.sets} в количестве {self.quantity}'
+
+
+class TableReservation(models.Model):
+    table = models.ForeignKey(
+        'tables.Table',
+        on_delete=models.CASCADE,
+        related_name='table_reservations',
+        verbose_name='Забронированный стол'
+    )
+    reservation = models.ForeignKey(
+        Reservation,
+        on_delete=models.CASCADE,
+        related_name='table_reservations',
+        verbose_name='Бронь'
+    )
+
+    class Meta:
+        verbose_name = 'Бронь стола'
+        verbose_name_plural = 'Брони столов'
