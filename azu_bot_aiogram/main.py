@@ -25,9 +25,8 @@ from handlers.basic import (back_to_cafe_menu, back_to_date, back_to_name,
                             get_phone, get_start, get_true_contact,
                             main_cafe_menu, name_for_reserving,
                             no_free_table, person_per_table, route_to_cafe,
-                            pay_again_other_cafe)
+                            pay_again_other_cafe, wrong_input)
 from handlers.pay import order, pre_checkout_query, succesfull_payment
-from handlers.menu import back_to_catalog
 from middlewares.appshed_middelware import SchedulerMiddleware
 from settings import settings
 from utils.states import StepsForm
@@ -65,7 +64,6 @@ async def start():
         F.successful_payment,
         StepsForm.PAY_STATE
     )
-    dp.callback_query.register(back_to_catalog)
     dp.message.register(
         get_start,
         Command(commands=['start', 'run'])
@@ -200,7 +198,7 @@ async def start():
     )
     dp.message.register(
         choose_set,
-        F.text.regexp(r'^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'),
+        F.text.regexp(r'^((7|8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{10}$'),
         StepsForm.PHONE_STATE
     )
     dp.message.register(
@@ -222,6 +220,9 @@ async def start():
         person_per_table,
         IsCorrectDate(),
         StepsForm.CHOOSE_DATE
+    )
+    dp.message.register(
+        wrong_input
     )
 
     try:

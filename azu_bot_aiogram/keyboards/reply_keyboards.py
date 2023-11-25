@@ -170,6 +170,7 @@ def check_order_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
+        one_time_keyboard=True,
         input_field_placeholder='Проверьте Ваш заказ.'
     )
 

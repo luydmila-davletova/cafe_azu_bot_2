@@ -287,6 +287,12 @@ async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
         reply_markup=choose_another_cafe_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)
 
+    
+async def wrong_input(message: Message, bot: Bot):
+    """Сообщение о некорректном пользовательском вводе."""
+    await message.answer(
+        'Не могу обработать поступившую информацию, пожалуйста попробуйте '
+        'ещё раз. Или перезапустите бота по команде /start')
 
 async def bot_error(message: Message, bot: Bot, state: FSMContext):
     """В случае если появляется ошибки - выдача пользователю сообщения"""
