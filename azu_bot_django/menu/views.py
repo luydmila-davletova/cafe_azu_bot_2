@@ -1,4 +1,3 @@
-from asgiref.sync import sync_to_async
 from rest_framework import viewsets
 from rest_framework.response import Response
 
@@ -23,7 +22,6 @@ class SetViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save()
 
-    @sync_to_async
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

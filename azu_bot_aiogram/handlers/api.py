@@ -19,7 +19,8 @@ async def get_cafe(bot=None):
             if not isinstance(response, list):
                 await bot.send_message(
                     chat_id=settings.bots.admin_id,
-                    text='У бота отсутствует токен доступа к Django!')
+                    text='Нет связи с базой данных!'
+                    'Проверьте валидность django token!')
                 return None
             return response
 

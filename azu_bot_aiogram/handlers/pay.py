@@ -68,7 +68,7 @@ async def pre_checkout_query(
     state: FSMContext
 ):
     """Обработка заказа. Поскольку у нас нет доставки, тут авто согласие."""
-    cafes = await get_cafe()
+    cafes = await get_cafe(bot)
     context_data = await state.get_data()
     address_cafe = context_data.get('address')
     for cafe in cafes:
