@@ -45,3 +45,5 @@ requests==2.31.0
 unify==0.5
 untokenize==0.1.1
 yarl==1.9.2
+channels==4.0.0
+uvicorn==0.24.0.post1

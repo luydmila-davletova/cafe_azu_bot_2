@@ -19,3 +19,4 @@ class StepsForm(StatesGroup):
     PAY_STATE = State()
     FINAL_STATE = State()
     REMINDER_STATE = State()
+    ERROR = State()

@@ -63,7 +63,7 @@
 Вводим поочередно Имя пользователя, почту и пароль.
 После чего запускаем базу данных:
 ```
-~ py manage.py runserver
+~ uvicorn azu_bot_django.asgi:application
 ```
 
 ### Наполнение базы данных
@@ -94,7 +94,7 @@
 - Перейти в папку с базой данных и запустить её:
 ```
 ~ cd azu_bot_django
-~ py manage.py runserver
+~ uvicorn azu_bot_django.asgi:application
 ```
 - Выйти из папки с базой данных, перейти в папку бота, запустить бота:
 ```

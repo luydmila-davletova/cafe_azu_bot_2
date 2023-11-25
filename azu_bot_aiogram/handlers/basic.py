@@ -19,13 +19,17 @@ from utils.states import StepsForm
 
 async def get_start(message: Message, bot: Bot, state: FSMContext):
     """Приветствие и выбор адреса кафе."""
-    cafes = await get_cafe()
-    await message.answer('Ассэламуалейкум!\n'
-                         'Я чат-бот сети кафе АЗУ!\n'
-                         'Рады будем приготовить для Вас ифтар!\n'
-                         'Пожалуйста выберите адрес кафе:',
-                         reply_markup=cafe_select_kbd(cafes))
-    await state.set_state(StepsForm.CHOOSE_CAFE)
+    cafes = await get_cafe(bot)
+    if cafes is None:
+        await state.set_state(StepsForm.ERROR)
+        await bot_error(message, bot, FSMContext)
+    else:
+        await message.answer('Ассэламуалейкум!\n'
+                             'Я чат-бот сети кафе АЗУ!\n'
+                             'Рады будем приготовить для Вас ифтар!\n'
+                             'Пожалуйста выберите адрес кафе:',
+                             reply_markup=cafe_select_kbd(cafes))
+        await state.set_state(StepsForm.CHOOSE_CAFE)
 
 
 async def main_cafe_menu(message: Message, bot: Bot, state: FSMContext):
@@ -95,10 +99,10 @@ async def get_contacts(message: Message, bot: Bot, state: FSMContext):
     for cafe in cafes:
         if cafe['address'] == address_cafe:
             break
-    cafe_address = cafe['address']
+    cafe_number = cafe['number']
     await message.answer(f'Номер выбранного кафе: {cafe_number}\n'
-                        'Режим работы: ежедневно с 9:00 до 20:00',
-                        reply_markup=back_kbd())
+                         'Режим работы: ежедневно с 9:00 до 20:00',
+                         reply_markup=back_kbd())
     await state.set_state(StepsForm.CAFE_ADDRESS)
 
 
@@ -199,8 +203,8 @@ async def choose_set(message: Message, bot: Bot, state: FSMContext):
 
 
 async def confirm_order(
-        message: Message, bot: Bot, sets: dict, state: FSMContext
-    ):
+    message: Message, bot: Bot, sets: dict, state: FSMContext
+):
     """Выводит заказ пользователя в преобразованом виде для проверки."""
     make_sets(sets)
     await state.update_data(total_price=f'{sets["total_price"]}')
@@ -283,9 +287,22 @@ async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
         reply_markup=choose_another_cafe_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)
 
-
+    
 async def wrong_input(message: Message, bot: Bot):
     """Сообщение о некорректном пользовательском вводе."""
     await message.answer(
         'Не могу обработать поступившую информацию, пожалуйста попробуйте '
         'ещё раз. Или перезапустите бота по команде /start')
+
+async def bot_error(message: Message, bot: Bot, state: FSMContext):
+    """В случае если появляется ошибки - выдача пользователю сообщения"""
+    await message.answer(
+        'Технические неполадки, просим обратится по телефону или лично'
+    )
+
+
+async def pay_again_other_cafe(message: Message, bot: Bot, state: FSMContext):
+    """Клиент выбирает другое кафе, если нет мест."""
+    await state.update_data(address=message.text)
+    await message.answer('Выберите способ оплаты',
+                         reply_markup=choose_pay_type_kbd())
