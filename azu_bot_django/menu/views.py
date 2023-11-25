@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from menu.models import Dishes, Set
 from menu.serializers import (DishesSerializer, SetReadSerializer,
                               SetWriteSerializer)
+from asgiref.sync import sync_to_async
 
 
 class DishesViewSet(viewsets.ModelViewSet):
@@ -22,6 +23,7 @@ class SetViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save()
 
+    @sync_to_async
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

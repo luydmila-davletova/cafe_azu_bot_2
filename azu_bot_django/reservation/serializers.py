@@ -4,6 +4,7 @@ from menu.serializers import SetReadSerializer
 from reservation.models import OrderSets, Reservation
 from tables.models import Table
 from tables.serializers import TableSerializer
+from asgiref.sync import sync_to_async
 
 
 class OrderSetsSerializer(serializers.ModelSerializer):
@@ -22,6 +23,7 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
         fields = ('id', 'quantity', 'sets', 'date', 'name', 'number')
         model = Reservation
 
+    @sync_to_async
     def create(self, validated_data):
         res_sets = validated_data.pop('sets')
         res_quantity = validated_data.pop('quantity')
@@ -36,6 +38,7 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
         self.get_available_table(validated_data, reservation)
         return reservation
 
+    @sync_to_async
     def get_available_table(self, validated_data, reservation):
         """
         Ищем доступные столы и создаем связь с бронью, либо выдаем ошибку
@@ -92,6 +95,7 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
                     }
                 )
 
+    @sync_to_async
     def merge_tables(self, available_tables, required_quantity):
         """Соединяем столы"""
         available_tables = available_tables.order_by('-quantity')
