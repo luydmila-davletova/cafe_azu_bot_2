@@ -34,7 +34,6 @@ class ReservationForm(forms.ModelForm):
 
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    readonly_fields = ('id',)
     list_display = ('cafe', 'view_tables', 'view_order_sets',
                     'name', 'number', 'date')
     list_filter = ('date', 'status')
