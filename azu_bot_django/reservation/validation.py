@@ -1,7 +1,6 @@
 from datetime import date, datetime, timedelta
 
 import requests
-from asgiref.sync import sync_to_async
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -56,7 +55,6 @@ def tables_available(form_model):
 """Валидаторы для сериализаторов"""
 
 
-@sync_to_async
 def cancell_reservation(data, rus=False):
     reservation_date = data['date'].value
     reservation_date = date.fromisoformat(reservation_date)
@@ -72,7 +70,6 @@ def cancell_reservation(data, rus=False):
             )
 
 
-@sync_to_async
 def get_sunset_from_api():
     """Получаем время захода солнца"""
     try:

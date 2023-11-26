@@ -92,7 +92,7 @@ async def back_to_set(message: Message, bot: Bot, state: FSMContext):
 
 async def get_contacts(message: Message, bot: Bot, state: FSMContext):
     """Страничка контактов выбранного кафе."""
-    cafes = await get_cafe()
+    cafes = await get_cafe(bot)
     context_data = await state.get_data()
     address_cafe = context_data.get('address')
     cafe_number = ''
@@ -281,18 +281,19 @@ async def no_free_table(message: Message, bot: Bot, state: FSMContext):
 
 async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
     """Выбрать кафе со свободными столами запрошенной вместимости."""
-    cafes = await get_cafe()
+    cafes = await get_cafe(bot)
     await message.answer(
         '***Тут список кафе со свободными столами запрошенной вместимости***',
         reply_markup=choose_another_cafe_kbd(cafes))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)
 
-    
+
 async def wrong_input(message: Message, bot: Bot):
     """Сообщение о некорректном пользовательском вводе."""
     await message.answer(
         'Не могу обработать поступившую информацию, пожалуйста попробуйте '
         'ещё раз. Или перезапустите бота по команде /start')
+
 
 async def bot_error(message: Message, bot: Bot, state: FSMContext):
     """В случае если появляется ошибки - выдача пользователю сообщения"""
