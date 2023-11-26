@@ -1,8 +1,10 @@
 from aiogram import Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from handlers.api import get_cafe
+from handlers.api import get_cafe, post_quantity
+from handlers.get_free_places import get_free_places
 from handlers.media_group import get_media_group
+from handlers.sets_for_order import make_sets
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        check_order_kbd,
                                        choose_another_cafe_kbd,
@@ -13,7 +15,6 @@ from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        move_tables_or_change_cafe_kbd,
                                        people_per_table_kbd,
                                        reserve_or_back_kbd, table_or_back_kbd)
-from handlers.sets_for_order import make_sets
 from utils.states import StepsForm
 
 
@@ -148,12 +149,27 @@ async def choose_date(message: Message, bot: Bot, state: FSMContext):
 
 async def person_per_table(message: Message, bot: Bot, state: FSMContext):
     """Выбор количества персон для брони стола."""
-    await message.answer('Укажите количество персон',
-                         reply_markup=people_per_table_kbd())
     if message.text.startswith('Назад'):
         pass
     else:
         await state.update_data(date=message.text)
+    cafes = await get_cafe(bot)
+    context_data = await state.get_data()
+    address_cafe = context_data.get('address')
+    for cafe in cafes:
+        if cafe['address'] == address_cafe:
+            break
+    data_dict = {}
+    data_dict['date'] = '-'.join(context_data.get('date').split('.')[::-1])
+    data_dict['quantity'] = 0
+    check_current_cafe = await post_quantity(cafe['id'], data=data_dict)
+    free_places = check_current_cafe['quantity']
+    await message.answer(
+        'Количество свободных мест в этом кафе '
+        f'на выбранную дату: {free_places}.\n'
+        'Укажите количество гостей.',
+        reply_markup=people_per_table_kbd()
+    )
     await state.set_state(StepsForm.PERSON_AMOUNT)
 
 
@@ -162,8 +178,6 @@ async def name_for_reserving(message: Message, bot: Bot, state: FSMContext):
     await message.answer('На чье имя бронируем стол?',
                          reply_markup=enter_name_kbd())
     if message.text.startswith('Назад'):
-        pass
-    elif message.text.startswith('Сдвигать'):
         pass
     elif message.text.startswith('ул.'):
         await state.update_data(address=message.text)
@@ -193,7 +207,7 @@ async def get_phone(message: Message, bot: Bot, state: FSMContext):
 
 
 async def choose_set(message: Message, bot: Bot, state: FSMContext):
-    """Интерактивное меню для оформления заказа с количеством порций."""
+    """Меню для оформления заказа с количеством порций."""
     if message.text is not None and not message.text.startswith('Назад'):
         await state.update_data(phone=message.text)
     else:
@@ -273,8 +287,8 @@ async def no_free_table(message: Message, bot: Bot, state: FSMContext):
     """Диалог при отсутствии свободных столов."""
     await state.update_data(person_amount=message.text)
     await message.answer('К сожалению нужного Вам столика нет в наличии.\n'
-                         'Можем предложить Вам соединить несколько столов '
-                         ' или забронировать стол в другом кафе нашей сети.',
+                         'Можем предложить Вам забронировать стол '
+                         'в другом кафе нашей сети.',
                          reply_markup=move_tables_or_change_cafe_kbd())
     await state.set_state(StepsForm.NO_FREE_TABLE)
 
@@ -282,9 +296,12 @@ async def no_free_table(message: Message, bot: Bot, state: FSMContext):
 async def choose_another_cafe(message: Message, bot: Bot, state: FSMContext):
     """Выбрать кафе со свободными столами запрошенной вместимости."""
     cafes = await get_cafe(bot)
+    context_data = await state.get_data()
+    cafe_list = await get_free_places(cafes, context_data)
     await message.answer(
-        '***Тут список кафе со свободными столами запрошенной вместимости***',
-        reply_markup=choose_another_cafe_kbd(cafes))
+        'На кнопках ниже представлены адреса кафе с подходящим количеством '
+        'свободных столов. \n Пожалуйста выберите адрес.',
+        reply_markup=choose_another_cafe_kbd(cafe_list))
     await state.set_state(StepsForm.CHOOSE_ANOTHER_CAFE)
 
 
