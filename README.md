@@ -94,6 +94,7 @@
 - Перейти в папку с базой данных и запустить её:
 ```
 ~ cd azu_bot_django
+~ python manage.py collectstatic
 ~ uvicorn azu_bot_django.asgi:application
 ```
 - Выйти из папки с базой данных, перейти в папку бота, запустить бота:
