@@ -179,8 +179,6 @@ async def name_for_reserving(message: Message, bot: Bot, state: FSMContext):
                          reply_markup=enter_name_kbd())
     if message.text.startswith('Назад'):
         pass
-    elif message.text.startswith('Сдвигать'):
-        pass
     elif message.text.startswith('ул.'):
         await state.update_data(address=message.text)
     else:

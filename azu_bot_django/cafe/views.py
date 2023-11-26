@@ -16,7 +16,6 @@ class CafeViewSet(viewsets.ReadOnlyModelViewSet):
     @action(methods=['POST'], detail=True)
     def quantity(self, request, pk):
         data = request.data
-#        if 'date' not in data.keys():
         if 'quantity' not in data.keys():
             return JsonResponse({
                 'date': [
