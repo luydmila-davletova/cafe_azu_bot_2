@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from handlers.api import get_cafe, post_quantity
 from handlers.get_free_places import get_free_places
-from handlers.media_group import get_media_group
+from handlers.media_group import get_media_group, watch_media_group
 from handlers.sets_for_order import make_sets
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        check_order_kbd,
@@ -109,8 +109,10 @@ async def get_contacts(message: Message, bot: Bot, state: FSMContext):
 
 async def cafe_menu(message: Message, bot: Bot, state: FSMContext):
     """Страничка меню выбранного кафе (до начала бронирования)."""
-    await message.answer('***Тут должны появляться сеты***',
-                         reply_markup=table_or_back_kbd())
+    await watch_media_group(message, bot)
+    await message.answer(
+        'Чтобы заказать ифтар-сет, выберите "Забронировать стол".',
+        reply_markup=table_or_back_kbd())
     await state.set_state(StepsForm.MENU_WATCH)
 
 
