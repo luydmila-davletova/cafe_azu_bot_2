@@ -34,7 +34,7 @@ class Table(models.Model):
         ordering = ('cafe', 'quantity')
 
     def __str__(self):
-        return f'{self.name} на {self.quantity} человек'
+        return f'{self.name} в {self.cafe.name} на {self.quantity} человек'
 
 
 class ReservationTable(models.Model):

@@ -147,16 +147,6 @@ async def start():
         )
     )
     dp.message.register(
-        name_for_reserving,
-        IsPersonAmount(),
-        or_f(StepsForm.PERSON_AMOUNT, StepsForm.CHOOSE_ANOTHER_CAFE)
-    )
-    dp.message.register(
-        no_free_table,
-        TooManyPersons(),
-        StepsForm.PERSON_AMOUNT
-    )
-    dp.message.register(
         choose_another_cafe,
         F.text == 'Выбрать другое кафе',
         StepsForm.NO_FREE_TABLE
@@ -220,6 +210,16 @@ async def start():
         person_per_table,
         IsCorrectDate(),
         StepsForm.CHOOSE_DATE
+    )
+    dp.message.register(
+        no_free_table,
+        TooManyPersons(),
+        StepsForm.PERSON_AMOUNT
+    )
+    dp.message.register(
+        name_for_reserving,
+        IsPersonAmount(),
+        or_f(StepsForm.PERSON_AMOUNT, StepsForm.CHOOSE_ANOTHER_CAFE)
     )
     dp.message.register(
         wrong_input

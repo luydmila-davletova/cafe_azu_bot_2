@@ -93,7 +93,6 @@ def move_tables_or_change_cafe_kbd():
     """Сдвигать столы или сменить кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Выбрать другое кафе')
-    keyboard_builder.button(text='Сдвигать столы')
     keyboard_builder.button(text='Назад ' + emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
@@ -103,11 +102,11 @@ def move_tables_or_change_cafe_kbd():
     )
 
 
-def choose_another_cafe_kbd(cafes):
+def choose_another_cafe_kbd(cafe_list):
     """Выбрать другое кафе, если в текущем нет столов."""
     keyboard_builder = ReplyKeyboardBuilder()
-    for cafe in cafes:
-        keyboard_builder.button(text=cafe['address'])
+    for cafe_address in cafe_list:
+        keyboard_builder.button(text=cafe_address)
     keyboard_builder.adjust(2)
     keyboard_builder.button(text='Назад ' + emojize(':reverse_button:'))
     keyboard_builder.button(text='Отмена')
