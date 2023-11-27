@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    build: ../azu_bot_django
+    image: certelen/azu_bot_django:v1
     restart: always
     volumes:
       - static_value:/app/static/
@@ -11,7 +11,7 @@ services:
     env_file:
       - ../.env
   frontend:
-    build: ../azu_bot_aiogram
+    build: certelen/azu_bot_aiogram:v1
     env_file:
       - ../.env
   nginx:
