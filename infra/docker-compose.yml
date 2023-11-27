@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: certelen/azu_bot_django:v1
+    image: certelen/azu_cafe_django:v1
     restart: always
     volumes:
       - static_value:/app/static/
@@ -11,14 +11,14 @@ services:
     env_file:
       - ../.env
   frontend:
-    build: certelen/azu_bot_aiogram:v1
+    image: certelen/azu_cafe_aiogram:v1
     env_file:
       - ../.env
   nginx:
     image: nginx:1.21.3-alpine
     restart: always
     ports:
-      - "80:80"
+      - "81:81"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - static_value:/var/html/static/
