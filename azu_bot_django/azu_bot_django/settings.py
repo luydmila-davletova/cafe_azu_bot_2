@@ -9,11 +9,12 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'django-insecure-$9h!ujjvgrgilsbc&%idh%)tb86u+^qkr#2#p!o^ej48n6)=m7'
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', default='django-insecure-$9h!ujjvgrgilsbc&%idh%)tb86u+^qkr#2#p!o^ej48n6)=m7')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 MAX_CHAR_LENGTH = 256
 MAX_DIGIT_LENGTH = 15
@@ -55,6 +56,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'azu_bot_django.urls'
 
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1"]
+
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
@@ -88,7 +91,7 @@ DATABASES = {
 #         'NAME': os.getenv('DATABASE_NAME', default='postgres'),
 #         'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
 #         'PASSWORD': os.getenv('DATABASE_PASSWORD', default='postgres'),
-#         'HOST': os.getenv('DATABASE_HOST', default='localhost'),
+#         'HOST': os.getenv('DATABASE_HOST', default='db'),
 #         'PORT': os.getenv('DATABASE_PORT', default='5432'),
 #     }
 # }
@@ -120,7 +123,10 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
