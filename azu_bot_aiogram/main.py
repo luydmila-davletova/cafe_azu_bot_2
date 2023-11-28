@@ -46,6 +46,10 @@ async def start():
     dp.update.middleware.register(SchedulerMiddleware(scheduler))
 
     dp.message.register(
+        get_start,
+        Command(commands=['start', 'run'])
+    )
+    dp.message.register(
         order,
         F.text == 'Оплатить через ЮКасса',
         StepsForm.PAY_STATE
@@ -63,10 +67,6 @@ async def start():
         succesfull_payment,
         F.successful_payment,
         StepsForm.PAY_STATE
-    )
-    dp.message.register(
-        get_start,
-        Command(commands=['start', 'run'])
     )
     dp.message.register(
         get_true_contact,
@@ -147,16 +147,6 @@ async def start():
         )
     )
     dp.message.register(
-        name_for_reserving,
-        IsPersonAmount(),
-        or_f(StepsForm.PERSON_AMOUNT, StepsForm.CHOOSE_ANOTHER_CAFE)
-    )
-    dp.message.register(
-        no_free_table,
-        TooManyPersons(),
-        StepsForm.PERSON_AMOUNT
-    )
-    dp.message.register(
         choose_another_cafe,
         F.text == 'Выбрать другое кафе',
         StepsForm.NO_FREE_TABLE
@@ -220,6 +210,16 @@ async def start():
         person_per_table,
         IsCorrectDate(),
         StepsForm.CHOOSE_DATE
+    )
+    dp.message.register(
+        no_free_table,
+        TooManyPersons(),
+        StepsForm.PERSON_AMOUNT
+    )
+    dp.message.register(
+        name_for_reserving,
+        IsPersonAmount(),
+        or_f(StepsForm.PERSON_AMOUNT, StepsForm.CHOOSE_ANOTHER_CAFE)
     )
     dp.message.register(
         wrong_input

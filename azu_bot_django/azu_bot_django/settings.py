@@ -1,19 +1,53 @@
 import os
 from dataclasses import dataclass
-from pathlib import Path
 
 from dotenv import load_dotenv
 from environs import Env
 
 load_dotenv()
 
+
+@dataclass
+class Bots:
+    bot_token: str
+    admin_id: int
+    provider_token: str
+
+
+@dataclass
+class Settings:
+    bots: Bots
+
+
+def get_settings(path: str):
+    env = Env()
+    env.read_env(path)
+
+    return Settings(
+        bots=Bots(
+            bot_token=env.str('TOKEN'),
+            admin_id=env.int('ADMIN_ID'),
+            provider_token=env.str('PROVIDER_TOKEN'),
+        )
+    )
+
+
+settings = get_settings('.env')
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'django-insecure-$9h!ujjvgrgilsbc&%idh%)tb86u+^qkr#2#p!o^ej48n6)=m7'
+WEB_HOST = os.getenv(
+    'WEB_HOST', default='127.0.0.1')
+WEB_PORT = os.getenv(
+    'WEB_PORT', default='')
+WEB_PROTOCOL = os.getenv(
+    'WEB_PROTOCOL', default='http://')
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', default='django-insecure-$9h!ujjvgrgilsbc&%idh%)tb86u+^qkr#2#p!o^ej48n6)=m7')
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 MAX_CHAR_LENGTH = 256
 MAX_DIGIT_LENGTH = 15
@@ -29,7 +63,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
     'ckeditor',
     'cafe',
     'menu',
@@ -46,6 +79,7 @@ CKEDITOR_JQUERY_URL = 'https://cdn.jsdelivr.net/jquery/3.5.1/jquery.min.js'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -54,6 +88,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'azu_bot_django.urls'
+
+CSRF_TRUSTED_ORIGINS = [f"{WEB_PROTOCOL}{WEB_HOST}{WEB_PORT}"]
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
@@ -75,23 +111,23 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'azu_bot_django.wsgi.application'
 ASGI_APPLICATION = 'azu_bot_django.asgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DATABASE_NAME', default='postgres'),
-#         'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
-#         'PASSWORD': os.getenv('DATABASE_PASSWORD', default='postgres'),
-#         'HOST': os.getenv('DATABASE_HOST', default='localhost'),
-#         'PORT': os.getenv('DATABASE_PORT', default='5432'),
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME', default='postgres'),
+        'USER': os.getenv('DATABASE_USERNAME', default='postgres'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DATABASE_HOST', default='db'),
+        'PORT': os.getenv('DATABASE_PORT', default='5432'),
+    }
+}
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -120,48 +156,11 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-}
-
-
-@dataclass
-class Bots:
-    bot_token: str
-    admin_id: int
-    provider_token: str
-
-
-@dataclass
-class Settings:
-    bots: Bots
-
-
-def get_settings(path: str):
-    env = Env()
-    env.read_env(path)
-
-    return Settings(
-        bots=Bots(
-            bot_token=env.str('TOKEN'),
-            admin_id=env.int('ADMIN_ID'),
-            provider_token=env.str('PROVIDER_TOKEN'),
-        )
-    )
-
-
-django_token = os.getenv('DJANGO_TOKEN')
-settings = get_settings('.env')

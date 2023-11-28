@@ -7,6 +7,7 @@ from cafe.models import Cafe
 from tables.models import Table
 from reservation.models import Reservation
 from cafe.serializers import CafeSerializer
+from admin_users.models import CustomUser
 
 
 class CafeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -40,3 +41,18 @@ class CafeViewSet(viewsets.ReadOnlyModelViewSet):
             'date': res_date,
             'quantity': quantity
         })
+
+    @action(methods=['GET'], detail=True)
+    def admins(self, request, pk):
+        cafe = Cafe.objects.get(id=pk)
+        cafe_admins = CustomUser.objects.filter(cafe=cafe)
+        answer = []
+        for admin in cafe_admins:
+            answer.append({
+                'name': admin.first_name,
+                'telegram': admin.telegram_id
+            })
+        return JsonResponse(
+            {'cafe': cafe.address,
+             'admins': answer}
+        )
