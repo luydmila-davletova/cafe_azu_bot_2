@@ -1,6 +1,8 @@
 name: cafe_azu_workflow
 
-on: [push]
+on:
+  push:
+    branches: [ develop ]
 
 jobs:
   deploy:
