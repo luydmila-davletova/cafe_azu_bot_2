@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from menu.serializers import SetReadSerializer
 from reservation.models import OrderSets, Reservation
@@ -49,30 +50,32 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
             reservation__status='booked'
         ).values('table')
         if quantity == 1:
-            available_bar_tables = Table.objects.select_for_update(
-            ).filter(
+            with transaction.atomic():
+                available_bar_tables = Table.objects.select_for_update(
+                ).filter(
+                    cafe__id=cafe.id,
+                    table_type='bar_table',
+                ).exclude(
+                    id__in=unailable_tables
+                )
+                available_bar_tables = available_bar_tables.filter(
+                    quantity__gte=1).first()
+            if available_bar_tables:
+                reservation.table.add(available_bar_tables)
+                return
+        with transaction.atomic():
+            available_simple_tables = Table.objects.select_for_update().filter(
+                cafe__id=cafe.id,
+                table_type='simple_table',
+            ).exclude(
+                id__in=unailable_tables
+            )
+            available_bar_tables = Table.objects.select_for_update().filter(
                 cafe__id=cafe.id,
                 table_type='bar_table',
             ).exclude(
                 id__in=unailable_tables
             )
-            available_bar_tables = available_bar_tables.filter(
-                quantity__gte=1).first()
-            if available_bar_tables:
-                reservation.table.add(available_bar_tables)
-                return
-        available_simple_tables = Table.objects.select_for_update().filter(
-            cafe__id=cafe.id,
-            table_type='simple_table',
-        ).exclude(
-            id__in=unailable_tables
-        )
-        available_bar_tables = Table.objects.select_for_update().filter(
-            cafe__id=cafe.id,
-            table_type='bar_table',
-        ).exclude(
-            id__in=unailable_tables
-        )
         single_table = available_simple_tables.filter(
             quantity__gte=quantity).first()
         if single_table:
