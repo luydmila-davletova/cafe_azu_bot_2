@@ -49,8 +49,8 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
             reservation__date=date,
             reservation__status='booked'
         ).values('table')
-        if quantity == 1:
-            with transaction.atomic():
+        with transaction.atomic():
+            if quantity == 1:
                 available_bar_tables = Table.objects.select_for_update(
                 ).filter(
                     cafe__id=cafe.id,
@@ -60,10 +60,9 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
                 )
                 available_bar_tables = available_bar_tables.filter(
                     quantity__gte=1).first()
-            if available_bar_tables:
-                reservation.table.add(available_bar_tables)
-                return
-        with transaction.atomic():
+                if available_bar_tables:
+                    reservation.table.add(available_bar_tables)
+                    return
             available_simple_tables = Table.objects.select_for_update().filter(
                 cafe__id=cafe.id,
                 table_type='simple_table',
@@ -76,24 +75,24 @@ class ReservationWriteSerializer(serializers.ModelSerializer):
             ).exclude(
                 id__in=unailable_tables
             )
-        single_table = available_simple_tables.filter(
-            quantity__gte=quantity).first()
-        if single_table:
-            reservation.table.add(single_table)
-            return
-        else:
-            merged_tables = self.merge_tables(
-                available_simple_tables, quantity)
-            if merged_tables:
-                reservation.table.set(merged_tables)
+            single_table = available_simple_tables.filter(
+                quantity__gte=quantity).first()
+            if single_table:
+                reservation.table.add(single_table)
+                return
             else:
-                reservation.delete()
-                raise serializers.ValidationError(
-                    {
-                        'status': 'error',
-                        'message': 'Недостаточно свободных столов.'
-                    }
-                )
+                merged_tables = self.merge_tables(
+                    available_simple_tables, quantity)
+                if merged_tables:
+                    reservation.table.set(merged_tables)
+                else:
+                    reservation.delete()
+                    raise serializers.ValidationError(
+                        {
+                            'status': 'error',
+                            'message': 'Недостаточно свободных столов.'
+                        }
+                    )
 
     def merge_tables(self, available_tables, required_quantity):
         """Соединяем столы"""
