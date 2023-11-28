@@ -5,7 +5,7 @@ from admin_users.models import CustomUser
 
 ADD_CUSTOM_FIELDS_IN_USER_FORM = ((
     'Работает в кафе',
-    {'fields': ('cafe',)}
+    {'fields': ('cafe', 'telegram_id',)}
 ),)
 
 

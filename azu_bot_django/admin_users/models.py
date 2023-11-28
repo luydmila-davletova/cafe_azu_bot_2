@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from azu_bot_django.settings import MAX_CHAR_LENGTH
 from cafe.models import Cafe
 from reservation.models import OrderSets, Reservation
 
@@ -15,6 +16,11 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
         help_text='Для сотрудников кафе обязателен выбор к привязанному кафе',
+    )
+    telegram_id = models.CharField(
+        'Телеграмм администратора',
+        max_length=MAX_CHAR_LENGTH,
+        help_text='Администратору так же требуется написать боту хотя бы раз',
     )
 
     class Meta:
