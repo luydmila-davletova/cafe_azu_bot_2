@@ -71,6 +71,7 @@ nano .env
 - PROVIDER_TOKEN = <Токен платежной системы>
 - SECRET_KEY=<SECRET_KEY>
 
+
 - POSTGRES_DB = postgres
 - POSTGRES_USER = postgres
 - POSTGRES_PASSWORD = postgres
@@ -91,11 +92,11 @@ sudo docker compose up -d
 ```
 sudo docker compose exec backend python manage.py migrate
 ```
-При первом запуске собираем статику:
+И собираем статику:
 ```
 sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
-Создайте суперпользователя:
+Создаем суперпользователя:
 ```
 sudo docker compose exec backend python manage.py createsuperuser
 ```

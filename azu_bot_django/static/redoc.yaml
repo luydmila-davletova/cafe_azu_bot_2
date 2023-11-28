@@ -438,6 +438,38 @@ paths:
                       - Обязательное поле.
         404:
           description: Объект не найден
+  /cafes/{cafe_id}/quantity/:
+    post:
+      tags:
+        - Tables
+      operationId: Получение количества свободных мест в указанную дату
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quantity'
+      responses:
+        200:
+          description: Удачное выполнение запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quantity'
+              examples:
+                Ответ:
+                  value: 
+                    cafe: ул. Чистопольская 2
+                    date: 2024-11-23
+                    quantity: 28
+        400:
+          description: Отсутствует обязательное поле в теле запроса
+          content:
+            application/json:
+              examples:
+                400:
+                  value:
+                    date:
+                      - Обязательное поле.
   /api-token-auth/:
     post:
       tags:
@@ -455,6 +487,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Token'
+              examples:
+                Ответ:
+                  value: 
+                    Token: str
         400:
           description: Отсутствует обязательное поле в теле запроса
           content:
@@ -471,6 +507,14 @@ paths:
 
 components:
   schemas:
+    Quantity:
+      type: object
+      properties:
+        date:
+          type: date
+          title: Дата брони
+      required:
+        - date
     Dish:
       type: object
       properties:
