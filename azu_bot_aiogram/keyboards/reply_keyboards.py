@@ -141,7 +141,6 @@ def enter_phone_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Введите номер телефона.'
     )
 
@@ -155,8 +154,7 @@ def go_to_pay_or_choose_food_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
-        input_field_placeholder='Перейти к оплате?'
+        input_field_placeholder='Измените заказ или перейдите к оплате.'
     )
 
 
@@ -169,7 +167,6 @@ def check_order_kbd():
     keyboard_builder.adjust(1, 2)
     return keyboard_builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
         input_field_placeholder='Проверьте Ваш заказ.'
     )
 
@@ -190,7 +187,6 @@ def no_free_tables_kbd():
     """Появляется в случае отсутствия свободных столов в кафе."""
     keyboard_builder = ReplyKeyboardBuilder()
     keyboard_builder.button(text='Выбрать другое кафе')
-    keyboard_builder.button(text='Сдвигать столы')
     keyboard_builder.button(text='Назад ' + emojize(':calendar:'))
     keyboard_builder.button(text='Отмена')
     keyboard_builder.adjust(2)
@@ -210,5 +206,5 @@ def reminder_kbd():
     return keyboard_builder.as_markup(
         resize_keyboard=True,
         one_time_keyboard=True,
-        input_field_placeholder='За сколько до начала ифтара напомнить?'
+        input_field_placeholder='Выберите одну из кнопок.'
     )

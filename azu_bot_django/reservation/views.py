@@ -1,9 +1,8 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from cafe.models import Cafe
-from menu.models import Set
 from reservation.models import Reservation
 from reservation.serializers import (ReservationReadSerializer,
                                      ReservationWriteSerializer)
@@ -39,11 +38,3 @@ class ReservationViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         cancell_reservation(serializer)
-
-
-def cafe_menu(request):
-    sets = Set.objects.all()
-    context = {
-        'sets': sets,
-    }
-    return render(request, 'menu.html', context)

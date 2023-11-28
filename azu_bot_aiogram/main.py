@@ -46,6 +46,10 @@ async def start():
     dp.update.middleware.register(SchedulerMiddleware(scheduler))
 
     dp.message.register(
+        get_start,
+        Command(commands=['start', 'run'])
+    )
+    dp.message.register(
         order,
         F.text == 'Оплатить через ЮКасса',
         StepsForm.PAY_STATE
@@ -63,10 +67,6 @@ async def start():
         succesfull_payment,
         F.successful_payment,
         StepsForm.PAY_STATE
-    )
-    dp.message.register(
-        get_start,
-        Command(commands=['start', 'run'])
     )
     dp.message.register(
         get_true_contact,

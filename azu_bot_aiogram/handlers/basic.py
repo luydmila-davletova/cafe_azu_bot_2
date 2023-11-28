@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from handlers.api import get_cafe, post_quantity
 from handlers.get_free_places import get_free_places
-from handlers.media_group import get_media_group
+from handlers.media_group import get_media_group, watch_media_group
 from handlers.sets_for_order import make_sets
 from keyboards.reply_keyboards import (back_kbd, cafe_select_kbd,
                                        check_order_kbd,
@@ -109,8 +109,10 @@ async def get_contacts(message: Message, bot: Bot, state: FSMContext):
 
 async def cafe_menu(message: Message, bot: Bot, state: FSMContext):
     """Страничка меню выбранного кафе (до начала бронирования)."""
-    await message.answer('***Тут должны появляться сеты***',
-                         reply_markup=table_or_back_kbd())
+    await watch_media_group(message, bot)
+    await message.answer(
+        'Чтобы заказать ифтар-сет, выберите "Забронировать стол".',
+        reply_markup=table_or_back_kbd())
     await state.set_state(StepsForm.MENU_WATCH)
 
 
@@ -230,7 +232,11 @@ async def confirm_order(
     text = 'Вы выбрали:\n'
     for number, amount in data_sets_order.items():
         text += f'Сет №{number} в количестве {amount} шт.\n'
-    text += f'Общая стоимость: {total_price} руб.'
+    text += (
+        f'Общая стоимость: {total_price} руб.\n'
+        'Чтобы изменить заказ - просто введите здесь новую комбинацию '
+        'сетов и их количества.'
+    )
 
     await message.answer(text=text,
                          reply_markup=go_to_pay_or_choose_food_kbd())
@@ -285,8 +291,11 @@ async def choose_pay_method(message: Message, bot: Bot, state: FSMContext):
 
 async def no_free_table(message: Message, bot: Bot, state: FSMContext):
     """Диалог при отсутствии свободных столов."""
-    await state.update_data(person_amount=message.text)
-    await message.answer('К сожалению нужного Вам столика нет в наличии.\n'
+    if message.text.startswith('Назад'):
+        pass
+    else:
+        await state.update_data(person_amount=message.text)
+    await message.answer('К сожалению нужного столика нет в наличии.\n'
                          'Можем предложить Вам забронировать стол '
                          'в другом кафе нашей сети.',
                          reply_markup=move_tables_or_change_cafe_kbd())

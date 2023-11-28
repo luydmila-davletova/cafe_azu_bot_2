@@ -16,9 +16,4 @@ urlpatterns = [
         TemplateView.as_view(template_name='redoc.html'),
         name='redoc'
     ),
-    path(
-        'menulist/',
-        TemplateView.as_view(template_name='menu.html'),
-        name='menulist'
-    ),
 ]

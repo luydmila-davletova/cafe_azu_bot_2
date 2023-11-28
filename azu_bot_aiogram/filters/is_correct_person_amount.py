@@ -10,7 +10,7 @@ from handlers.api import get_cafe, post_quantity
 class IsPersonAmount(BaseFilter):
     async def __call__(self, message: Message) -> bool:
         """Проверка корректности ввода количества человек."""
-        pattern = r'^(0?[1-9]|[12][0-9]|3[01])$'
+        pattern = r'^(0?[1-9]|[123][0-9]|4[0])$'
         if re.match(pattern, message.text):
             return {'amount': message.text}
         else:

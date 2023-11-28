@@ -1,10 +1,6 @@
 from dataclasses import dataclass
-import os
 
 from environs import Env
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 @dataclass
@@ -32,5 +28,4 @@ def get_settings(path: str):
     )
 
 
-django_token = os.getenv('DJANGO_TOKEN')
 settings = get_settings('.env')

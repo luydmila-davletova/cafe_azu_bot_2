@@ -3,7 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import LabeledPrice, Message, PreCheckoutQuery
 
 from handlers.basic import cafe_select_kbd
-from handlers.api import get_cafe, post_reservation
+from handlers.api import get_cafe, post_reservation, get_cafe_admins
 from handlers.appsched import get_reminder_time
 from settings import settings
 from utils.states import StepsForm
@@ -88,6 +88,7 @@ async def pre_checkout_query(
             pre_checkout_query.id,
             ok=True
         )
+        await state.update_data(cafe_id=cafe['id'])
     else:
         await bot.answer_pre_checkout_query(
             pre_checkout_query.id,
@@ -133,6 +134,10 @@ async def succesfull_payment(
     for number, amount in data_sets_order.items():
         text += f'Сет №{number} в количестве {amount} шт.\n'
     text += f'Общая стоимость: {total_price} руб.'
-    await bot.send_message(chat_id=settings.bots.admin_id, text=text)
+    cafe_id = context_data.get('cafe_id')
+    admins = await get_cafe_admins(cafe_id)
+    admins = admins['admins']
+    for admin in admins:
+        await bot.send_message(chat_id=admin['telegram'], text=text)
     await state.set_state(StepsForm.FINAL_STATE)
     await get_reminder_time(message, bot, state)
