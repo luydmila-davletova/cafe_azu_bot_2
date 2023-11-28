@@ -9,8 +9,7 @@ services:
     env_file:
       - ../.env
   backend:
-    # image: certelen/azu_cafe_django:v1
-    build: ../azu_bot_django/
+    image: certelen/azu_cafe_django:v1
     restart: always
     volumes:
       - static_value:/app/static/
@@ -18,8 +17,7 @@ services:
     env_file:
       - ../.env
   frontend:
-    # image: certelen/azu_cafe_aiogram:v1
-    build: ../azu_bot_aiogram/
+    image: certelen/azu_cafe_aiogram:v1
     env_file:
       - ../.env
   nginx:
