@@ -4,103 +4,106 @@
 
 ## Технологии
 - Python 3.11
-- aiogram 3.1.1
 - Django 4.2.7
+- Django REST Framework 3.14.0
+- Aiogram 3.1.1
+- PostgreSQL 13.0
+- Nginx 1.21.3
+- Docker
+- Docker-compose
+- Docker Hub
 - SunriseSunset.io API
 
 # Установка
 ## Копирование репозитория
-Клонируем репозиторий
+Клонируем репозиторий и переходим в директорию infra:
 ```
 ~ git clone git@github.com:Studio-Yandex-Practicum-Hackathons/cafe_azu_bot_2.git
+~ cd ./cafe_azu_bot_2/infra/
 ```
+Требуется изменить server_name и listen в ./infra/nginx/default.conf, ports в docker-compose.yml
 
-## Виртуальное окружение
-Переходим в клонированный репозиторий
+## Подготовка боевого сервера:
+1. Перейдите на боевой сервер:
 ```
-~ cd {путь до папки с клонированным репозиторем}
-~ cd cafe_azu_bot_2
+ssh username@server_address
 ```
-Устанавливаем и активируем виртуальное окружение
+2. Обновите индекс пакетов APT:
 ```
-~ py -3.11 -m venv venv
-~ . venv/Scripts/activate
+sudo apt update
 ```
-Устанавливаем требуемые зависимости:
+и обновите установленные в системе пакеты и установите обновления безопасности:
 ```
-~ pip install -r requirements.txt
+sudo apt upgrade -y
 ```
-
-## База данных
-В azu_bot_django/azu_bot_django/settings.py выбрать нужную базу данных (sqlite3 или postgresql)
-### env
-Выполнять только если ваша база данных postgresql, иначе пропустить этот шаг.
-
-Создать файл .env со следующими строками для базы данных:
-- DATABASE_NAME = <Имя для подключения к базе данных>
-- DATABASE_USERNAME = <Имя пользователя для подключения к базе данных>
-- DATABASE_PASSWORD = <Пароль для подключения к базе данных>
-- DATABASE_HOST = <Адрес для подключения к базе данных>
-- DATABASE_PORT = <Порт для подключения к базе данных>
-
-### Миграция базы данных
-Переходим в раздел с базой данных:
+Создайте папку `nginx`:
 ```
-~ cd azu_bot_django
+mkdir nginx
+``` 
+Скопируйте файлы docker-compose.yaml, nginx/default.conf из вашего проекта на сервер в home/<ваш_username>/docker-compose.yaml, home/<ваш_username>/nginx/default.conf соответственно:
 ```
-Создаем миграцию для базы данных:
+scp docker-compose.yaml <username>@<host>/home/<username>/docker-compose.yaml
+scp default.conf <username>@<host>/home/<username>/nginx/default.conf
 ```
-~ py manage.py makemigrations cafe tables menu admin_users reservation
+Установите Docker и Docker-compose:
 ```
-И применяем её:
+sudo apt install docker.io
 ```
-~ py manage.py migrate
 ```
-Создаем суперпользователя:
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
-~ py manage.py createsuperuser
 ```
-Вводим поочередно Имя пользователя, почту и пароль.
-После чего запускаем базу данных:
+sudo chmod +x /usr/local/bin/docker-compose
 ```
-~ uvicorn azu_bot_django.asgi:application
+Проверьте правильность установки Docker-compose:
 ```
-
-### Наполнение базы данных
-Доступ к сервису становится доступен по [адресу](http://127.0.0.1:8000/admin/)
-
-По указаному адресу нужно создать хотя бы по одному экземпляру кафе, стола, блюда, сета.
-
-Так же можно наполнить базу данных готовыми сетами, блюдами, кафе и столам:
-
+sudo  docker-compose --version
 ```
-~ py manage.py load_data
+На боевом сервере создайте файл .env:
 ```
-
-Создать пользователя-бота и по [адресу](http://127.0.0.1:8000/admin/authtoken/tokenproxy/) нужно создать токен для бота.
-
-## Телеграмм-бот
-### env
-В уже существующем файле .env добавить строки:
+touch .env
+```
+и заполните переменные окружения
+```
+nano .env
 - TOKEN = <Токен бота, можно получить у BotFather>
 - ADMIN_ID = <ID телеграмм-аккаунта админа>
 - PROVIDER_TOKEN = <Токен платежной системы>
-- DJANGO_TOKEN = <Токен для бота, который был создан в разделе базы данных>
+- SECRET_KEY=<SECRET_KEY>
 
-### Запуск
-Для полного запуска телеграмм-бота с базой данных нужно:
-- Выполнить все вышеуказанные действия по установке.
-- Перейти в папку с базой данных и запустить её:
+- POSTGRES_DB = postgres
+- POSTGRES_USER = postgres
+- POSTGRES_PASSWORD = postgres
+- POSTGRES_HOST = db
+- POSTGRES_PORT = 5432
+
+- WEB_HOST = <ip сервера>
+- WEB_PORT = <Порт сервера>
+- WEB_PROTOKOL = <Протокол сервера>
 ```
-~ cd azu_bot_django
-~ uvicorn azu_bot_django.asgi:application
+
+## Развертывание проекта с помощью Docker:
+Разворачиваем контейнеры в фоновом режиме из папки infra:
 ```
-- Выйти из папки с базой данных, перейти в папку бота, запустить бота:
+sudo docker compose up -d
 ```
-~ cd azu_bot_aiogram
-~ py main.py
+При первом запуске выполняем миграции:
 ```
-Телеграмм-бот готов к работе.
+sudo docker compose exec backend python manage.py migrate
+```
+При первом запуске собираем статику:
+```
+sudo docker compose exec backend python manage.py collectstatic --no-input
+```
+Создайте суперпользователя:
+```
+sudo docker compose exec backend python manage.py createsuperuser
+```
+Загружаем данные из csv-таблиц в базу данных:
+```
+sudo docker compose exec backend python manage.py load_data 
+```
+
 # Адресные пути
 - [Документация к API базе данных](http://127.0.0.1:8000/redoc)
 - [Админ-панель базы данных](http://127.0.0.1:8000/admin)
